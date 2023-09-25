@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: spotify
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION:-latest}
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - ${PHPMYADMIN_PORT:-8082}:80
+    environment:
+      UPLOAD_LIMIT: 1G
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+    depends_on:
+      - mariadb
