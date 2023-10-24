@@ -1,22 +1,27 @@
 
 const createUser = require('../../lib/application/use_cases/user/CreateUser')
 const UserRepository = require('../../lib/infrastructure/repositories/interfaces/UserRepository');
-const mockUserRepository = new UserRepository();
+const getAccessToken =  require('../../lib/application/use_cases/GetAccessToken')
 const User = require('../../lib/domain/model/User')
-describe('userSignUp', () =>{
-    it("should create an user", async  () =>{
-        const persistedUser = new User(
-            1,
-            'testPeudo',
-            'testEmail@gmail.com',
-            'test_alias',
-            'testbio',
-            'passwordtest',
-            'spotifyToken',
-            2,
-            1)
-        mockUserRepository.persist = jest.fn(() => persistedUser)
+const bcrypt = require("bcrypt");
+const {use} = require("bcrypt/promises");
+const persistedUser = new User(
+    1,
+    'testPeudo',
+    'testEmail@gmail.com',
+    'test_alias',
+    'testbio',
+    'passwordtest',
+    'spotifyToken',
+    2,
+    1)
 
+
+describe('createUser', () =>{
+    it("should create an user", async  () =>{
+        const mockUserRepository = new UserRepository();
+        mockUserRepository.persist = jest.fn(() => persistedUser)
+        mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => null)
         const user = await createUser(
             'testPeudo',
             'testEmail@gmail.com',
@@ -37,7 +42,108 @@ describe('userSignUp', () =>{
         expect(mockResult.id_role).toBe(2)
         expect(mockResult.id_etat).toBe(1)
         expect(mockResult.password).not.toBe(user.password)
-    } )
+    })
+    it('should throw an error when an user with the same pseudo exists', async ()=>{
+        const mockUserRepository = new UserRepository();
+        mockUserRepository.persist = jest.fn(() => persistedUser)
+        mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => persistedUser)
+         await expect(createUser(
+             persistedUser.pseudo,
+            '',
+            '',
+            '',
+            '',
+            '',
+            {userRepository: mockUserRepository}
+        )).rejects.toThrow('Email ou Pseudo déjà existant')
+    })
+    it('should throw an error when an user with the same email exists', async ()=>{
+        const mockUserRepository = new UserRepository();
+        mockUserRepository.persist = jest.fn(() => persistedUser)
+        mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => persistedUser)
+        await expect(createUser(
+            '',
+            persistedUser.email,
+            '',
+            '',
+            '',
+            '',
+            {userRepository: mockUserRepository}
+        )).rejects.toThrow('Email ou Pseudo déjà existant')
+    })
+
+})
+
+describe('getAccessToken', () =>{
+    it('should generate access token', async () =>{
+        const passwordTest = 'passwordTest'
+        const persistedUserCrypted = new User(
+            1,
+            'testPeudo',
+            'testEmail@gmail.com',
+            'test_alias',
+            'testbio',
+            await bcrypt.hash(passwordTest,10),
+            'spotifyToken',
+            2,
+            1)
+        const mockUserRepository = new UserRepository();
+        const mockAccessTokenManager = {};
+        mockAccessTokenManager.generate = jest.fn((uid) => 1)
+        mockUserRepository.getByIdent = jest.fn((ident) => persistedUserCrypted)
+        expect(
+            await getAccessToken(
+                persistedUserCrypted.pseudo,
+                passwordTest,
+                {
+                    userRepository : mockUserRepository,
+                    accessTokenManager: mockAccessTokenManager
+                }
+            )
+        ).toBe(1)
+    })
 
 
+    it('should throw an error because the password is incorrect', async () =>{
+        const passwordTest = 'passwordTest'
+        const persistedUserCrypted = new User(
+            1,
+            'testPeudo',
+            'testEmail@gmail.com',
+            'test_alias',
+            'testbio',
+            await bcrypt.hash(passwordTest,10),
+            'spotifyToken',
+            2,
+            1)
+        const mockUserRepository = new UserRepository();
+        const mockAccessTokenManager = {};
+        mockUserRepository.getByIdent = jest.fn((ident) => persistedUserCrypted)
+        await expect(
+            getAccessToken(
+                persistedUserCrypted.pseudo,
+                'badPassword',
+                {
+                    userRepository : mockUserRepository,
+                    accessTokenManager: mockAccessTokenManager
+                }
+            )
+        ).rejects.toThrow('Bad credentials')
+    })
+
+    it('should throw an error because the user doesnt exists', async () =>{
+        const mockUserRepository = new UserRepository();
+        const mockAccessTokenManager = {};
+        mockUserRepository.getByIdent = jest.fn((ident) => null)
+        await expect(
+            getAccessToken(
+                '',
+                '',
+                {
+                    userRepository : mockUserRepository,
+                    accessTokenManager: mockAccessTokenManager
+                }
+            )
+        ).rejects.toThrow('Bad credentials')
+    })
 })
