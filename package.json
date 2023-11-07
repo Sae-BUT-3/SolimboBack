@@ -7,7 +7,9 @@
     "dev": "nodemon",
     "start": "node index.js",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "prepare": "husky install",
+    "husky": "node ./node_modules/husky/lib/bin.js"
   },
   "dependencies": {
     "@hapi/boom": "^9.1.0",
@@ -31,6 +33,7 @@
     "underscore": "^1.13.6"
   },
   "devDependencies": {
+    "husky": "^8.0.3",
     "jest": "^26.0.1",
     "nodemon": "^2.0.4",
     "sequelize-mock": "^0.10.2"
