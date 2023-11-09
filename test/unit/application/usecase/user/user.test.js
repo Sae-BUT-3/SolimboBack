@@ -1,8 +1,8 @@
 
-const createUser = require('../../lib/application/use_cases/user/CreateUser')
-const UserRepository = require('../../lib/infrastructure/repositories/interfaces/UserRepository');
-const getAccessToken =  require('../../lib/application/use_cases/security/GetAccessToken')
-const User = require('../../lib/domain/model/User')
+const createUser = require('../../../../../lib/application/use_cases/user/CreateUser')
+const UserRepository = require('../../../../../lib/infrastructure/repositories/interfaces/UserRepositoryAbstract');
+const getAccessToken =  require('../../../../../lib/application/use_cases/security/GetAccessToken')
+const User = require('../../../../../lib/domain/model/User')
 const bcrypt = require("bcrypt");
 const {use} = require("bcrypt/promises");
 const persistedUser = new User(
