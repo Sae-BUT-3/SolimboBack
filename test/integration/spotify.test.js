@@ -54,7 +54,6 @@ describe('spotify route', () => {
                 method: 'GET',
                 url: `/spotify/search?query=query&spotify_filter=track&allow_user=true&limit=cez`,
             });
-
             expect(res1.statusCode).toBe(400);
         });
 
