@@ -7,7 +7,7 @@ AVOIR NODE v14.15.3 (je conseil NVM)
 INSTALLER DOCKER 
 docker-compose up -d
 npm install
-npm start
+npm run dev
 ```
 
 
