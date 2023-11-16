@@ -220,7 +220,18 @@ describe('user route', () => {
 
         it('should respond code 200', async () => {
             const password = 'password'
-            let fetchedUser = new User("id","pseudo","email","alias","bio",await bcrypt.hash(password,10),"token",1,1)
+            const fetchedUser = new User(
+                "id",
+                "pseudo",
+                "email",
+                "alias",
+                "bio",
+                "path/to/file",
+                "path/to/file",
+                await bcrypt.hash(password,10),
+                "token",
+                1,
+                new Date("10-06-2003"))
 
             mockUserRepository.getByIdent = jest.fn((ident) =>{
                 return fetchedUser
@@ -240,7 +251,18 @@ describe('user route', () => {
         })
         it('should respond code 401 bad password', async () => {
             const password = 'password'
-            let fetchedUser = new User("id","pseudo","email","alias","bio",await bcrypt.hash(password,10),"token",1,1)
+            const fetchedUser = new User(
+                "id",
+                "pseudo",
+                "email",
+                "alias",
+                "bio",
+                "path/to/file",
+                "path/to/file",
+                await bcrypt.hash(password,10),
+                "token",
+                1,
+                new Date("10-06-2003"))
 
             mockUserRepository.getByIdent = jest.fn((ident) =>{
                 return fetchedUser
