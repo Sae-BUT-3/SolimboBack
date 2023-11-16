@@ -25,10 +25,12 @@ const mockUser = new User(
     'testEmail@gmail.com',
     'test_alias',
     'testbio',
+    'path/to/photo',
+    'path/to/photo',
     'passwordtest',
     'spotifyToken',
     2,
-    1
+    new Date("10-06-2003")
 )
 const SpotifyRepositoryFixture = {
     tracks : { items : [rawTrackWithOneArtistOneAlbum]},

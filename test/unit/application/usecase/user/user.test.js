@@ -11,10 +11,13 @@ const persistedUser = new User(
     'testEmail@gmail.com',
     'test_alias',
     'testbio',
+    'path/to/file',
+    'path/to/file',
     'passwordtest',
     'spotifyToken',
     2,
-    1)
+    new Date("10-06-2003")
+)
 
 
 describe('createUser', () =>{
@@ -40,7 +43,9 @@ describe('createUser', () =>{
         expect(mockResult.bio).toBe(persistedUser.bio)
         expect(mockResult.spotifyToken).toBe(persistedUser.spotifyToken)
         expect(mockResult.id_role).toBe(2)
-        expect(mockResult.id_etat).toBe(1)
+        expect(mockResult.photo).toBe(null)
+        expect(mockResult.tempPhoto).toBe(null)
+        expect(mockResult.banUntil).toBe(null)
         expect(mockResult.password).not.toBe(user.password)
     })
     it('should throw an error when an user with the same pseudo exists', async ()=>{
@@ -83,10 +88,12 @@ describe('getAccessToken', () =>{
             'testEmail@gmail.com',
             'test_alias',
             'testbio',
+            'path/to/file',
+            'path/to/file',
             await bcrypt.hash(passwordTest,10),
             'spotifyToken',
             2,
-            1)
+            new Date("10-06-2003"))
         const mockUserRepository = new UserRepository();
         const mockAccessTokenManager = {};
         mockAccessTokenManager.generate = jest.fn((uid) => 1)
@@ -112,10 +119,12 @@ describe('getAccessToken', () =>{
             'testEmail@gmail.com',
             'test_alias',
             'testbio',
+            'path/to/file',
+            'path/to/file',
             await bcrypt.hash(passwordTest,10),
             'spotifyToken',
             2,
-            1)
+            new Date("10-06-2003"))
         const mockUserRepository = new UserRepository();
         const mockAccessTokenManager = {};
         mockUserRepository.getByIdent = jest.fn((ident) => persistedUserCrypted)
