@@ -2,9 +2,12 @@
 const Hapi = require('@hapi/hapi');
 const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
+const strategy = require("../../lib/infrastructure/config/strategy");
+const Jwt = require("@hapi/jwt");
 let server
 const mockUserRepository = {}
 const mockAccesTokenManager = {}
+require('dotenv').config()
 mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => {
     return null
 })
@@ -22,10 +25,14 @@ describe('user route', () => {
         await server.register([
             require('../../lib/interfaces/routes/users'),
         ]);
+        server.register(Jwt)
+
         server.app.serviceLocator = {
             userRepository: mockUserRepository,
             accessTokenManager:mockAccesTokenManager
         }
+        server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
+
     });
 
     afterEach(async () => {
