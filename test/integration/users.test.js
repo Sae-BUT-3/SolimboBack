@@ -4,6 +4,9 @@ const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
+const fs = require('fs')
+const FormData = require('form-data');
+
 let server
 const mockUserRepository = {}
 const mockAccesTokenManager = {}
@@ -14,24 +17,32 @@ mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => {
 mockUserRepository.persist = jest.fn((test) =>{
     return test
 })
-
+mockUserRepository.getPreviewPath = jest.fn((test) => null)
+mockUserRepository.addPreviewPath = jest.fn((test,test2) => null)
+mockUserRepository.getByUser = jest.fn((test) => {
+    console.log("test")
+    return 1
+})
 mockAccesTokenManager.generate = ((test) =>{return ''})
 describe('user route', () => {
 
     beforeEach(async () => {
+
         server = Hapi.server({
             port: process.env.PORT || 3000
         });
-        await server.register([
-            require('../../lib/interfaces/routes/users'),
-        ]);
-        server.register(Jwt)
-
         server.app.serviceLocator = {
             userRepository: mockUserRepository,
             accessTokenManager:mockAccesTokenManager
         }
+        server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
+
+        await server.register([
+            require('../../lib/interfaces/routes/users'),
+        ]);
+
+
 
     });
 
@@ -321,6 +332,35 @@ describe('user route', () => {
                 }}
             )
             expect(res.statusCode).toBe(400);
+        })
+    })
+    describe("/users/uploadPreviewProfile", () =>{
+        it("should respond code 200", async  ()  =>{
+            const form = new FormData();
+            server.app.serviceLocator.accessTokenManager.decode = jest.fn((test) => ({ value: 1 }));
+            const currentDirectory = process.cwd();
+            const imageBuffer = fs.createReadStream(currentDirectory+'\\test\\integration\\fixture\\imageTest.jpg');
+            await form.append('file', imageBuffer);
+            console.log(form.getHeaders())
+
+            const res =  server.inject({
+                method: 'POST',
+                url: '/users/uploadPreviewProfile',
+                payload: form,
+                headers: {
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDEwMDgwNzV9.-n_G0pKIBI9jkUD56kYjby03tFnqYLttc_Z51eLvhKU',
+                    ...form.getHeaders()
+                } ,
+            })
+            console.log(res)
+            res.then(null,(error) => console.log(error))
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            console.log('Hello');
+            await sleep(20000);
+            expect(res.statusCode).toBe(401)
         })
     })
 });
