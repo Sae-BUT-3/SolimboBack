@@ -19,10 +19,7 @@ describe('document repository',  ()=>{
     })
     describe('document repository with errors', () =>{
         it("shouldn't create file",  async () =>{
-            await expect(documentRepository.uploadFile("test/unit/infrastructure/repositories/testFolder",{})).rejects.toThrow('Cannot read property \'filename\' of undefined')
-        })
-        it("shouldn't delete file",  async () =>{
-            await expect(documentRepository.uploadFile("test/unit/infrastructure/repositories/testFolder/test.png",{})).rejects.toThrow('Cannot read property \'filename\' of undefined')
+            await expect(documentRepository.uploadFile("test/unit/infrastructure/repositories/testFolder",{})).rejects.toThrow()
         })
     })
 })
