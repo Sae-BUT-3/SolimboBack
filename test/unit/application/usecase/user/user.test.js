@@ -15,6 +15,7 @@ const persistedUser = new User(
     'path/to/file',
     'passwordtest',
     'spotifyToken',
+    'refreshToken',
     2,
     new Date("10-06-2003")
 )
@@ -32,6 +33,7 @@ describe('createUser', () =>{
             'testbio',
             'passwordtest',
             'spotifyToken',
+            'refreshToken',
             {userRepository : mockUserRepository}
         )
         const mockResult = mockUserRepository.persist.mock.calls[0][0]
@@ -41,7 +43,8 @@ describe('createUser', () =>{
         expect(mockResult.email).toBe(persistedUser.email)
         expect(mockResult.alias).toBe(persistedUser.alias)
         expect(mockResult.bio).toBe(persistedUser.bio)
-        expect(mockResult.spotifyToken).toBe(persistedUser.spotifyToken)
+        expect(mockResult.token).toBe(persistedUser.token)
+        expect(mockResult.refresh_token).toBe(persistedUser.refresh_token)
         expect(mockResult.id_role).toBe(2)
         expect(mockResult.photo).toBe(null)
         expect(mockResult.tempPhoto).toBe(null)
@@ -59,6 +62,7 @@ describe('createUser', () =>{
             '',
             '',
             '',
+             '',
             {userRepository: mockUserRepository}
         )).rejects.toThrow('Email ou Pseudo déjà existant')
     })
@@ -73,6 +77,7 @@ describe('createUser', () =>{
             '',
             '',
             '',
+                '',
             {userRepository: mockUserRepository}
         )).rejects.toThrow('Email ou Pseudo déjà existant')
     })
