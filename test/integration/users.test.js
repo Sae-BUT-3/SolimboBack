@@ -6,23 +6,33 @@ const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
 const fs = require('fs')
 const FormData = require('form-data');
-
+require('dotenv').config()
 let server
 const mockUserRepository = {}
 const mockAccesTokenManager = {}
-require('dotenv').config()
+const mockSpotifyRepository = {}
+
+
+
 mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo) => {
     return null
 })
 mockUserRepository.persist = jest.fn((test) =>{
     return test
 })
+mockUserRepository.updateUser = jest.fn(user => user)
 mockUserRepository.getPreviewPath = jest.fn((test) => null)
 mockUserRepository.addPreviewPath = jest.fn((test,test2) => null)
 mockUserRepository.getByUser = jest.fn((test) => {
-    console.log("test")
     return 1
 })
+
+
+
+mockSpotifyRepository.refreshToken = jest.fn(refresh => refresh)
+mockSpotifyRepository.getToken= jest.fn(()=> 1)
+
+
 mockAccesTokenManager.generate = ((test) =>{return ''})
 describe('user route', () => {
 
@@ -33,7 +43,8 @@ describe('user route', () => {
         });
         server.app.serviceLocator = {
             userRepository: mockUserRepository,
-            accessTokenManager:mockAccesTokenManager
+            accessTokenManager:mockAccesTokenManager,
+            spotifyRepository: mockSpotifyRepository,
         }
         server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
@@ -63,6 +74,7 @@ describe('user route', () => {
                     bio: "dzada"
                 }
             });
+            console.log(res)
             expect(res.statusCode).toBe(200);
         });
 
@@ -79,7 +91,6 @@ describe('user route', () => {
                     pseudo: "testsss",
                     alias: "testsss",
                     password: "pdazdazassworrdddd",
-                    spotifyToken: "tokeeeeen",
                     bio: "dzada"
                 }
             });

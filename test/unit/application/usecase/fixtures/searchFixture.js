@@ -29,6 +29,7 @@ const mockUser = new User(
     'path/to/photo',
     'passwordtest',
     'spotifyToken',
+    'spotifyToken',
     2,
     new Date("10-06-2003")
 )
