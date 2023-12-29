@@ -1,12 +1,12 @@
 const getToken = require("../../../../../lib/application/use_cases/spotify/GetToken")
-const createUser = require("../../../../../lib/application/use_cases/user/CreateUser");
+const catchError = require("../utils/catchError")
 const mockSpotifyRepository = {}
 
 describe("GetToken", () =>{
     describe("GetToken valid ", ()=>{
 
         it("should return valid json", async ()=>{
-            expectedSpotifyCode = {
+            const expectedSpotifyCode = {
                 access_token: "access_token",
                 refresh_token: "refresh_token",
             }
@@ -16,13 +16,14 @@ describe("GetToken", () =>{
     })
     describe("GetToken invalid ", ()=>{
         it("should return error", async ()=>{
-            expectedSpotifyCode = {
+            const expectedSpotifyCode = {
                 error: "something"
             }
             mockSpotifyRepository.getToken = jest.fn((code )=> {return expectedSpotifyCode})
-            await expect(getToken("code",{spotifyRepository: mockSpotifyRepository})
-            ).rejects.toThrow('something')
-
+            const error = await catchError(async ()=>{
+                await getToken("code",{spotifyRepository: mockSpotifyRepository})
+            })
+            expect(error.code).toBe(400)
         })
     })
 })
