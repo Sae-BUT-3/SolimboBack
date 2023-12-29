@@ -1,5 +1,5 @@
 const DocumentRepositoryTest = require("../../../../lib/infrastructure/repositories/DocumentRepository")
-const createUser = require("../../../../lib/application/use_cases/user/CreateUser");
+const createUser = require("../../../../lib/application/use_cases/user/CompleteAccount");
 let filePath
 const documentRepository = new DocumentRepositoryTest();
 const mockFile = {
