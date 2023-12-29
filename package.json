@@ -48,12 +48,8 @@
     "npm": ">=6.12"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "**/*.{js}",
-      "!**/node_modules/**",
-      "!**/vendor/**",
-      "!**/coverage/**"
-    ],
-    "testURL": "http://localhost/"
+    "collectCoverage":true,
+    "collectCoverageFrom":["lib/application/**/*.js"],
+    "coverageDirectory":"coverage"
   }
 }
