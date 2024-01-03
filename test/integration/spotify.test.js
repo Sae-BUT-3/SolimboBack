@@ -7,6 +7,8 @@ const mockUserRepository = {}
 const mockSpotifyRepository = {}
 mockUserRepository.getUsersByPseudo = jest.fn((pseudo) =>{return []})
 mockSpotifyRepository.getSpotifySearchList = jest.fn((query, filter, limitSize) =>{return {}})
+mockSpotifyRepository.getSpotifyArtist = jest.fn((id) =>{return {}}) // mock la fct de repo 
+const wrongID = "1"
 
 describe('spotify route', () => {
 
@@ -84,6 +86,23 @@ describe('spotify route', () => {
                 expect(res1.statusCode).toBe(200);
             }
         });
-    })
+    }),
+    
 
+    describe("/spotify/FetchArtist", ()=>{
+        it('should respond code 400 invalid query/id', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/spotify/fetchArtist?query=`,
+            });
+            expect(res1.statusCode).toBe(400);
+        });
+        it('should respond code 200', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/spotify/fetchArtist?query=query`,
+            });
+            expect(res1.statusCode).toBe(200);
+        });
+    })
 });
