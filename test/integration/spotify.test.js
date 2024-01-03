@@ -8,7 +8,6 @@ const mockSpotifyRepository = {}
 mockUserRepository.getUsersByPseudo = jest.fn((pseudo) =>{return []})
 mockSpotifyRepository.getSpotifySearchList = jest.fn((query, filter, limitSize) =>{return {}})
 mockSpotifyRepository.getSpotifyArtist = jest.fn((id) =>{return {}}) // mock la fct de repo 
-const wrongID = "1"
 
 describe('spotify route', () => {
 
