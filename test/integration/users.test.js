@@ -4,7 +4,6 @@ const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
-const {id_utilisateur} = require("../../lib/domain/model/User");
 require('dotenv').config()
 let server
 const mockUserRepository = {}
@@ -358,6 +357,78 @@ describe('user route', () => {
                 url: '/users/getUserByConfirmToken?confirmToken=test'
             })
             expect(res.statusCode).toBe(403);
+        })
+    })
+    describe("/users/sendResetEmail", ()=>{
+        it("should return valid code 200",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return {reset_token: 1,confirmed: true}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(1)
+        })
+        it("should return valid code 200 even though the user is not confirmed",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return {reset_token: 1,confirmed:false}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(0)
+        })
+        it("should return valid code 200 even though the user doesn't exists",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return null})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(0)
+        })
+    })
+    describe("/users/resetPassword", ()=>{
+        it("should return valid code 200",async ()=>{
+            mockUserRepository.getByResetToken = jest.fn(()=>{return {id:1}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/resetPassword',
+                payload: {
+                    resetToken: "eztgergrehre",
+                    password:"TestPassword",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+        })
+        it("should return valid code 400 error on token",async ()=>{
+            mockUserRepository.getByResetToken = jest.fn(()=> null)
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/resetPassword',
+                payload: {
+                    resetToken: "eztgergrehre",
+                    password:"TestPassword",
+                }}
+            )
+            expect(res.statusCode).toBe(400);
         })
     })
 });
