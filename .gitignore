@@ -6,5 +6,5 @@ node_modules
 
 upload
 
-.env
 docker-compose.yml
+.env
