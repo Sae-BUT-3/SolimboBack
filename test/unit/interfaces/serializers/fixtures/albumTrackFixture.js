@@ -3,14 +3,78 @@ const {
     expectedFixture,
 } = require("./artistFixture")
 
-const {
-    expectedRawTrackWithOneArtist,
-    rawTrackWithOneArtist,
-    expectedRawTrackWithServeralArtists,
-    rawTrackWithServeralArtists,
-    expectedRawTrackWithNoArtist,
-    rawTrackWithNoArtist,
-} = require('./albumTrackFixture')
+
+const rawTrackWithOneArtist = {
+    id: "test_id",
+    name: "test_name",
+    external_urls: {
+        spotify: "https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA"
+    },
+    artists: [
+        artistFixture
+    ],
+    duration_ms: 12121231,
+}
+
+const expectedRawTrackWithOneArtist = {
+    id:"test_id",
+    name:"test_name",
+    album: undefined,
+    artists:[
+        expectedFixture
+    ],
+    duration_ms:12121231,
+    popularity: undefined,
+    spotify_url:"https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA",
+    type:"track"
+}
+
+const rawTrackWithServeralArtists = {
+    id: "test_id",
+    name: "test_name",
+    external_urls: {
+        spotify: "https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA"
+    },
+    artists: [
+        artistFixture
+    ],
+    duration_ms: 12121231,
+}
+
+const expectedRawTrackWithServeralArtists = {
+    id:"test_id",
+    name:"test_name",
+    album: undefined,
+    artists:[
+        expectedFixture
+    ],
+    duration_ms:12121231,
+    popularity: undefined,
+    spotify_url:"https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA",
+    type:"track"
+}
+
+
+const rawTrackWithNoArtist = {
+    id: "test_id",
+    name: "test_name",
+    external_urls: {
+        spotify: "https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA"
+    },
+    artists: undefined,
+    duration_ms: 12121231,
+}
+
+const expectedRawTrackWithNoArtist = {
+    id:"test_id",
+    name:"test_name",
+    artists: undefined,
+    album: undefined,
+    duration_ms:12121231,
+    popularity: undefined,
+    spotify_url:"https://open.spotify.com/track/4UVDKEPTgMQXv9UlIqVTcA",
+    type:"track"
+}
 
 const albumRawOneArtist = {
     album_type: "album",
@@ -42,7 +106,9 @@ const albumRawOneArtist = {
     artists: [
         artistFixture
     ],
-    tracks: undefined,
+    tracks: [
+        rawTrackWithOneArtist
+    ],
 }
 
 const expectedAlbumOneArtist = {
@@ -72,7 +138,10 @@ const expectedAlbumOneArtist = {
     artists:[
         expectedFixture
     ],
-    tracks: undefined,
+    tracks: [
+        expectedRawTrackWithOneArtist
+    
+    ],
     genres: ["genre1", "genre2"],
     type:"album"
 }
@@ -108,7 +177,9 @@ const albumRawSeveralArtist = {
         artistFixture,
         artistFixture
     ],
-    tracks: undefined,
+    tracks: [
+        rawTrackWithServeralArtists
+    ],
     
 }
 
@@ -140,7 +211,9 @@ const expectedAlbumSeveralArtist = {
         expectedFixture,
         expectedFixture
     ],
-    tracks: undefined,
+    tracks: [
+        expectedRawTrackWithServeralArtists
+    ],
     genres: ["genre1", "genre2"],
     type:"album"
 }
@@ -169,7 +242,9 @@ const albumRawNoArtist = {
             width: 64
         }
     ],
-    tracks: undefined,
+    tracks: [
+        rawTrackWithNoArtist
+    ],
     name: "Perdu D'Avance",
     release_date: "2009-02-16",
     genres: ["genre1", "genre2"],
@@ -200,11 +275,19 @@ const expectedAlbumNoArtist = {
         }
     ],
     artists: undefined,
-    tracks: undefined,
+    tracks: [
+        expectedRawTrackWithNoArtist
+    ],
     genres: ["genre1", "genre2"],
     type:"album"
 }
 module.exports = {
+    expectedRawTrackWithOneArtist,
+    rawTrackWithOneArtist,
+    expectedRawTrackWithServeralArtists,
+    rawTrackWithServeralArtists,
+    expectedRawTrackWithNoArtist,
+    rawTrackWithNoArtist,
     albumRawOneArtist,
     expectedAlbumOneArtist,
     albumRawSeveralArtist,
