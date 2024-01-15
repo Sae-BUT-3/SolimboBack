@@ -106,9 +106,9 @@ const albumRawOneArtist = {
     artists: [
         artistFixture
     ],
-    tracks: [
-        rawTrackWithOneArtist
-    ],
+    tracks: {items : [
+            rawTrackWithOneArtist
+        ]},
 }
 
 const expectedAlbumOneArtist = {
@@ -140,7 +140,7 @@ const expectedAlbumOneArtist = {
     ],
     tracks: [
         expectedRawTrackWithOneArtist
-    
+
     ],
     genres: ["genre1", "genre2"],
     type:"album"
@@ -177,10 +177,12 @@ const albumRawSeveralArtist = {
         artistFixture,
         artistFixture
     ],
-    tracks: [
-        rawTrackWithServeralArtists
-    ],
-    
+    tracks: {
+        items: [
+            rawTrackWithServeralArtists
+        ],
+    }
+
 }
 
 const expectedAlbumSeveralArtist = {
@@ -242,9 +244,9 @@ const albumRawNoArtist = {
             width: 64
         }
     ],
-    tracks: [
-        rawTrackWithNoArtist
-    ],
+    tracks: {items: [
+            rawTrackWithNoArtist
+        ]},
     name: "Perdu D'Avance",
     release_date: "2009-02-16",
     genres: ["genre1", "genre2"],
