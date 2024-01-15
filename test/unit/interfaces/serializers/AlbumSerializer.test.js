@@ -7,6 +7,7 @@ const {
     albumRawNoArtist,
     expectedAlbumNoArtist
 } = require("./fixtures/albumFixture")
+
 describe('albumSerialize', () => {
     it("should return serialized album with one artist", ()=>{
         const result = serializeAlbum(albumRawOneArtist)
