@@ -21,7 +21,6 @@ describe('Search usecase', () => {
             "test",
             "filter",
             4,
-            false,
             {spotifyRepository : mockSpotifyRepository,userRepository: mockUserRepository})
         expect(result).toEqual(expectedSearchResult)
         expect(mockSpotifyRepository.getSpotifySearchList).toHaveBeenCalledWith("test","filter",4)
@@ -29,12 +28,11 @@ describe('Search usecase', () => {
     it("should return item list sorted by popularity with user", async ()=>{
         const result = await Search(
             "test",
-            "filter",
+            "user,track",
             4,
-            true,
             {spotifyRepository : mockSpotifyRepository,userRepository: mockUserRepository})
         expect(result).toEqual(expectedSearchResultWithUsers)
-        expect(mockSpotifyRepository.getSpotifySearchList).toHaveBeenCalledWith("test","filter",3)
+        expect(mockSpotifyRepository.getSpotifySearchList).toHaveBeenCalledWith("test","track",3)
     })
 });
 //see
