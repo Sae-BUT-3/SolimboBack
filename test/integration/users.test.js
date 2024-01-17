@@ -11,7 +11,7 @@ const mockAccesTokenManager = {}
 const mockSpotifyRepository = {}
 const mockMailRepository = {}
 const mockDocumentRepository = {}
-
+const mockFollowRepository = {}
 
 
 mockAccesTokenManager.generate = ((test) =>{return ''})
@@ -27,7 +27,8 @@ describe('user route', () => {
             accessTokenManager:mockAccesTokenManager,
             spotifyRepository: mockSpotifyRepository,
             mailRepository: mockMailRepository,
-            documentRepository: mockDocumentRepository
+            documentRepository: mockDocumentRepository,
+            followRepository: mockFollowRepository
         }
         server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
@@ -429,6 +430,67 @@ describe('user route', () => {
                 }}
             )
             expect(res.statusCode).toBe(400);
+        })
+    })
+    describe("/users/follow", ()=>{
+
+        it("should return valid code 200",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>"something")
+            mockFollowRepository.doesFollows = jest.fn(()=> true)
+            mockFollowRepository.follow = jest.fn(()=> {})
+            mockFollowRepository.unfollow = jest.fn(()=> {})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(200);
+        })
+        it("should return error code 401",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => null)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(401);
+        })
+        it("should return return invalid code 415",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>{
+                return {
+                    error: {
+                        status:415,
+                        message: "message"
+                    }
+                }
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(415);
         })
     })
 });

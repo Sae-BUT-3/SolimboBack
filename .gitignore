@@ -8,3 +8,5 @@ upload
 
 docker-compose.yml
 .env
+
+coverage/
