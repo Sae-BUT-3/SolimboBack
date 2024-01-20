@@ -448,7 +448,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
                 }
             })
             expect(res.statusCode).toBe(200);
@@ -464,7 +464,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
                 }
             })
             expect(res.statusCode).toBe(401);
@@ -487,7 +487,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
                 }
             })
             expect(res.statusCode).toBe(415);
