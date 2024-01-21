@@ -4,7 +4,6 @@ const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
-const {id_utilisateur} = require("../../lib/domain/model/User");
 require('dotenv').config()
 let server
 const mockUserRepository = {}
@@ -12,7 +11,7 @@ const mockAccesTokenManager = {}
 const mockSpotifyRepository = {}
 const mockMailRepository = {}
 const mockDocumentRepository = {}
-
+const mockFollowRepository = {}
 
 
 mockAccesTokenManager.generate = ((test) =>{return ''})
@@ -28,7 +27,8 @@ describe('user route', () => {
             accessTokenManager:mockAccesTokenManager,
             spotifyRepository: mockSpotifyRepository,
             mailRepository: mockMailRepository,
-            documentRepository: mockDocumentRepository
+            documentRepository: mockDocumentRepository,
+            followRepository: mockFollowRepository
         }
         server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
@@ -358,6 +358,139 @@ describe('user route', () => {
                 url: '/users/getUserByConfirmToken?confirmToken=test'
             })
             expect(res.statusCode).toBe(403);
+        })
+    })
+    describe("/users/sendResetEmail", ()=>{
+        it("should return valid code 200",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return {reset_token: 1,confirmed: true}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(1)
+        })
+        it("should return valid code 200 even though the user is not confirmed",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return {reset_token: 1,confirmed:false}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(0)
+        })
+        it("should return valid code 200 even though the user doesn't exists",async ()=>{
+            mockMailRepository.send = jest.fn(()=>{})
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=>{return null})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/sendResetEmail',
+                payload: {
+                    email:"chanon.mael@gmail.com",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockMailRepository.send).toHaveBeenCalledTimes(0)
+        })
+    })
+    describe("/users/resetPassword", ()=>{
+        it("should return valid code 200",async ()=>{
+            mockUserRepository.getByResetToken = jest.fn(()=>{return {id:1}})
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/resetPassword',
+                payload: {
+                    resetToken: "eztgergrehre",
+                    password:"TestPassword",
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+        })
+        it("should return valid code 400 error on token",async ()=>{
+            mockUserRepository.getByResetToken = jest.fn(()=> null)
+            mockUserRepository.updateUser = jest.fn(()=>{})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/resetPassword',
+                payload: {
+                    resetToken: "eztgergrehre",
+                    password:"TestPassword",
+                }}
+            )
+            expect(res.statusCode).toBe(400);
+        })
+    })
+    describe("/users/follow", ()=>{
+
+        it("should return valid code 200",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>"something")
+            mockFollowRepository.doesFollows = jest.fn(()=> true)
+            mockFollowRepository.follow = jest.fn(()=> {})
+            mockFollowRepository.unfollow = jest.fn(()=> {})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(200);
+        })
+        it("should return error code 401",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => null)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(401);
+        })
+        it("should return return invalid code 415",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>{
+                return {
+                    error: {
+                        status:415,
+                        message: "message"
+                    }
+                }
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJpYXQiOjE3MDU1MjQ5NTl9.NqUp2-1pLN_WXCXQfst5OgL7BYl8-zIcDKBSBJLY30g`
+                }
+            })
+            expect(res.statusCode).toBe(415);
         })
     })
 });

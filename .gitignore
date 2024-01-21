@@ -6,4 +6,7 @@ node_modules
 
 upload
 
-coverage
+docker-compose.yml
+.env
+
+coverage/
