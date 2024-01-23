@@ -19,36 +19,68 @@ rawTrackWithOneArtistOneAlbum.popularity = 1
 expectedAlbumOneArtist.popularity = 3
 expectedFixture.popularity = 2
 expectedRawTrackWithOneArtistOneAlbum.popularity = 1
-const mockUser = new User(
-    1,
-    'testPeudo',
-    'testEmail@gmail.com',
-    'test_alias',
-    'testbio',
-    'path/to/photo',
-    'path/to/photo',
-    'passwordtest',
-    'spotifyToken',
-    'spotifyToken',
-    2,
-    new Date("10-06-2003")
-)
+
 const SpotifyRepositoryFixture = {
     tracks : { items : [rawTrackWithOneArtistOneAlbum]},
     albums : {items : [albumRawOneArtist]},
     artists : {items : [artistFixture]}
 }
 const expectedSearchResult = [
-    expectedAlbumOneArtist,
-    expectedFixture,
-    expectedRawTrackWithOneArtistOneAlbum,
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "Perdu D'Avance",
+    },
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "Orelsan",
+    },
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "test_name",
+    },
 ]
 const expectedSearchResultWithUsers = [
-    expectedAlbumOneArtist,
-    expectedFixture,
-    expectedRawTrackWithOneArtistOneAlbum,
-    mockUser
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "Perdu D'Avance",
+    },
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "Orelsan",
+    },
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "",
+        title: "test_name",
+    },
+    {
+        imageURL: "photo",
+        subtitle: "pseudo",
+        title: "alias",
+    }
 ]
+const mockUser = {
+    id_utilisateur: "id_utilisateur",
+    pseudo: "pseudo",
+    email: "email",
+    alias: "alias",
+    photo: "photo",
+    photo_temporaire: "photo_temporaire",
+    token: "token",
+    refresh_token: "refresh_token",
+    reset_token: "reset_token",
+    password: "password",
+    id_role: "id_role",
+    ban_until: "ban_until",
+    confirmed: "confirmed",
+    confirm_token: "confirm_token",
+    type:  "user"
+}
 module.exports = {
     mockUser,
     SpotifyRepositoryFixture,
