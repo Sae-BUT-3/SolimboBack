@@ -16,6 +16,9 @@ describe('FetchArtist usecase', () => {
         const result = await fetchArtist( // fetchArtist metier, serialize est fait a la fin 
             idOrelsan, 
             {spotifyRepository : mockSpotifyRepository}) // va utiliser la fct getSpotifyArtist de mockSpotifyRepository
+            console.log("result", result)
+            console.log("expectedFixture", expectedFixture)
+
         expect(result).toEqual(expectedFixture)
         expect(mockSpotifyRepository.getSpotifyArtist).toHaveBeenCalledWith(idOrelsan) 
     })
