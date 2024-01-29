@@ -4,6 +4,5 @@ module.exports = async (action) => {
     }catch (error){
         return error
     }
-    console.log("dfezfezfzefez")
     return null
 }
