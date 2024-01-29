@@ -11,6 +11,7 @@ const {
     rawTrackWithOneArtistOneAlbum,
     expectedRawTrackWithOneArtistOneAlbum
 } = require("../../../interfaces/serializers/fixtures/trackFixture")
+const {tracks} = require("../../../../../lib/domain/model/Album");
 
 albumRawOneArtist.popularity = 3
 artistFixture.popularity = 2
@@ -29,39 +30,48 @@ const expectedSearchResult = [
     {
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "",
-        title: "Perdu D'Avance",
-    },
-    {
-        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-        subtitle: "",
         title: "Orelsan",
+        type: "artist"
     },
     {
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-        subtitle: "",
+        subtitle: "Orelsan",
+        title: "Perdu D'Avance",
+        type: "album"
+    },
+
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "Orelsan",
         title: "test_name",
+        type: "track"
     },
 ]
 const expectedSearchResultWithUsers = [
     {
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "",
-        title: "Perdu D'Avance",
-    },
-    {
-        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-        subtitle: "",
         title: "Orelsan",
+        type: "artist"
     },
     {
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-        subtitle: "",
+        subtitle: "Orelsan",
+        title: "Perdu D'Avance",
+        type: "album"
+    },
+
+    {
+        imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
+        subtitle: "Orelsan",
         title: "test_name",
+        type: "track"
     },
     {
         imageURL: "photo",
         subtitle: "pseudo",
         title: "alias",
+        type: "user"
     }
 ]
 const mockUser = {
