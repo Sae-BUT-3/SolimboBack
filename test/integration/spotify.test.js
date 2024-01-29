@@ -111,6 +111,16 @@ describe('spotify route', () => {
             });
             expect(res1.statusCode).toBe(200);
         });
+        it('should respond code 400 invalidID', async () => {
+            mockSpotifyRepository.getSpotifyArtist = jest.fn((id) =>{
+                throw new Error('test error')
+            })
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/spotify/fetchArtist?query=query`,
+            });
+            expect(res1.statusCode).toBe(400);
+        });
     })
     describe('/spotify/track', () => {
         it("should invalid return code 400", async ()=>{
