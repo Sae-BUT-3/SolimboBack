@@ -4,6 +4,7 @@ const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
+const jwt = require("jsonwebtoken");
 require('dotenv').config()
 let server
 const mockUserRepository = {}
@@ -12,7 +13,13 @@ const mockSpotifyRepository = {}
 const mockMailRepository = {}
 const mockDocumentRepository = {}
 const mockFollowRepository = {}
-
+const mockToken = jwt.sign({
+    sub: 'my-sub', // needs to match definition above
+    value: 1, // this is a custom key I used, it could be named anything. Value should be a way to authenticate the user
+    aud: 'urn:audience:test', // needs to match definition above
+    iss: 'urn:issuer:test', // needs to match definition above,
+    expiresIn: '365d'
+}, process.env.SECRET_ENCODER)
 
 mockAccesTokenManager.generate = ((test) =>{return ''})
 describe('user route', () => {
@@ -448,7 +455,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
+                    Authorization: `Bearer ${mockToken}`
                 }
             })
             expect(res.statusCode).toBe(200);
@@ -464,7 +471,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
+                    Authorization: `Bearer ${mockToken}`
                 }
             })
             expect(res.statusCode).toBe(401);
@@ -487,7 +494,7 @@ describe('user route', () => {
                     artistId: "eztgergrehre",
                 },
                 headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteS1zdWIiLCJ2YWx1ZSI6MSwiYXVkIjoidXJuOmF1ZGllbmNlOnRlc3QiLCJpc3MiOiJ1cm46aXNzdWVyOnRlc3QiLCJleHBpcmVzSW4iOiIzNjVkIiwiaWF0IjoxNzA1NzkzNjUxfQ.rBJRI1sBB8tCkKLEWfLSfb4MVlMy6sxQz9vspfLbcFc`
+                    Authorization: `Bearer ${mockToken}`
                 }
             })
             expect(res.statusCode).toBe(415);
