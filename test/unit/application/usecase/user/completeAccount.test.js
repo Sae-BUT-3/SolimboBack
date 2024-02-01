@@ -10,7 +10,6 @@ describe('createUser', () =>{
     const pseudo= 'testPseudo'
     const alias= 'testAlias'
     const bio= 'testBio'
-    const password= 'testPassword'
     const confirm_token= 'confirmToken'
     const photo = "otherpath/to/file"
     const email = "testemail@gmail.com"
@@ -30,7 +29,7 @@ describe('createUser', () =>{
         mockUserRepository.getByConfirmToken = jest.fn(()=>{
             return {...mockUser}
         })
-        const user = await completeAccount(pseudo,alias,bio,password,photo,confirm_token,serviceLocator)
+        const user = await completeAccount(pseudo,alias,bio,photo,confirm_token,serviceLocator)
         expect(user.id_utilisateur).toBe(1)
         expect(user.pseudo).toBe(pseudo)
         expect(user.email).toBe(email)
@@ -46,7 +45,7 @@ describe('createUser', () =>{
         mockUserRepository.getByConfirmToken = jest.fn(()=>{
             return {...mockUser}
         })
-        const user = await completeAccount(pseudo,alias,bio,password,null,confirm_token,serviceLocator)
+        const user = await completeAccount(pseudo,alias,bio,null,confirm_token,serviceLocator)
         console.log(user)
 
         expect(user.id_utilisateur).toBe(1)
@@ -63,7 +62,7 @@ describe('createUser', () =>{
         mockUserRepository.getByConfirmToken = jest.fn(()=>{
             return {...mockUser}
         })
-        const user = await completeAccount(pseudo,null,bio,password,null,confirm_token,serviceLocator)
+        const user = await completeAccount(pseudo,null,bio,null,confirm_token,serviceLocator)
         expect(user.id_utilisateur).toBe(1)
         expect(user.pseudo).toBe(pseudo)
         expect(user.email).toBe(email)
@@ -78,7 +77,7 @@ describe('createUser', () =>{
         })
         mockUserRepository.getByEmailOrPseudo = jest.fn(()=>'something')
         const error = await catchError(async ()=>{
-            await completeAccount(pseudo,null,bio,password,null,confirm_token,serviceLocator)
+            await completeAccount(pseudo,null,bio,null,confirm_token,serviceLocator)
         })
         expect(error.code).toBe(403)
     })
@@ -86,7 +85,7 @@ describe('createUser', () =>{
         mockUserRepository.getByConfirmToken = jest.fn(()=>null)
         mockUserRepository.getByEmailOrPseudo = jest.fn(()=>null)
         const error = await catchError(async ()=>{
-            await completeAccount(pseudo,null,bio,password,null,confirm_token,serviceLocator)
+            await completeAccount(pseudo,null,bio,null,confirm_token,serviceLocator)
         })
         expect(error.code).toBe(400)
     })
