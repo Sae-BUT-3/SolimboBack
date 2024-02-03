@@ -17,6 +17,7 @@ const mockSpotifyRepository = {}
 mockUserRepository.getUsersByPseudo = jest.fn((pseudo) =>{return []})
 mockSpotifyRepository.getSpotifySearchList = jest.fn((query, filter, limitSize) =>{return {}})
 mockSpotifyRepository.getSpotifyArtist = jest.fn((id) =>{return {}}) // mock la fct de repo
+mockSpotifyRepository.getSpotifyArtistSongs = jest.fn((id, filter, limit) =>{return {}})
 
 describe('spotify route', () => {
 
@@ -168,4 +169,51 @@ describe('spotify route', () => {
         })
 
     });
+
+
+    describe("/spotify/FetchArtistSongs", ()=>{
+    
+        it('should respond code 200', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                 url: `/spotify/fetchArtistSongs?id=azerty1234`, // juste id, filter, limit optional 
+            });
+            expect(res1.statusCode).toBe(200);
+        });
+
+        it('should respond code 200', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                 url: `/spotify/fetchArtistSongs?id=azerty1234&limit=10`, // juste id et limit
+            });
+            expect(res1.statusCode).toBe(200);      
+        });
+
+        it('should respond code 200', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                url: '/spotify/fetchArtistSongs?id=azerty1234&filter= album , compilation , appears_on ' // id et filtre avec espaces
+            });
+            expect(res1.statusCode).toBe(200);
+        });
+
+        it('should respond code 400 invalid id', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/spotify/fetchArtistSongs?id=`,
+            });
+            expect(res1.statusCode).toBe(400);
+        });      
+
+        it('should respond code 400 invalidID', async () => {
+            mockSpotifyRepository.getSpotifyArtistSongs = jest.fn((id) =>{
+                throw new Error('test error')
+            })
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/spotify/fetchArtistSongs?id=1234`,
+            });
+            expect(res1.statusCode).toBe(400);
+        });
+    })
 });
