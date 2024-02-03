@@ -5,8 +5,6 @@ const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
 const jwt = require("jsonwebtoken");
-const catchError = require("../unit/application/usecase/utils/catchError");
-const AuthWithSpotify = require("../../lib/application/use_cases/user/AuthWithSpotify");
 require('dotenv').config()
 let server
 const mockUserRepository = {}
@@ -487,7 +485,7 @@ describe('user route', () => {
             expect(res.statusCode).toBe(400)
 
         })
-        it("should throw error 500", async ()=>{
+        it("should throw error 403 1", async ()=>{
             mockSpotifyRepository.getToken = jest.fn(()=> {
                 return {
                     access_token,
@@ -509,7 +507,32 @@ describe('user route', () => {
                     spotify_code: "eztgergrehre",
                 },
             })
-            expect(res.statusCode).toBe(500)
+            expect(res.statusCode).toBe(403)
+        })
+        it("should throw error 403 2", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: true,
+                }
+            })
+            mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                },
+            })
+            expect(res.statusCode).toBe(403)
         })
         it("should return auth token", async ()=>{
             mockSpotifyRepository.getToken = jest.fn(()=> {
@@ -523,7 +546,8 @@ describe('user route', () => {
             })
             mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
                 return {
-                    confirmed: true
+                    confirmed: true,
+                    refresh_token: 'someting'
                 }
             })
             mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
