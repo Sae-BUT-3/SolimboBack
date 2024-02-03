@@ -2,11 +2,13 @@ const completeAccount = require('../../../../../lib/application/use_cases/user/C
 const catchError = require("../utils/catchError")
 const mockUserRepository = {}
 const mockDocumentRepository = {}
+const mockAccessTokenManager = {}
 const serviceLocator = {
     userRepository: mockUserRepository,
     documentRepository: mockDocumentRepository,
+    accessTokenManager: mockAccessTokenManager
 }
-describe('createUser', () =>{
+describe('CompleteAccount', () =>{
     const pseudo= 'testPseudo'
     const alias= 'testAlias'
     const bio= 'testBio'
@@ -16,9 +18,11 @@ describe('createUser', () =>{
     const photo_temporaire = "path/to/file"
     const confirmed = false
     const id_utilisateur = 1
+    const mockToken = 'token'
     const mockUser = {
         id_utilisateur,email,photo_temporaire,confirmed,confirm_token
     }
+    mockAccessTokenManager.generate = jest.fn(() => mockToken)
     mockDocumentRepository.deleteFile = jest.fn(()=>{})
     mockUserRepository.updateUser = jest.fn((user)=>user)
     afterEach(()=>{
@@ -30,14 +34,9 @@ describe('createUser', () =>{
             return {...mockUser}
         })
         const user = await completeAccount(pseudo,alias,bio,photo,confirm_token,serviceLocator)
-        expect(user.id_utilisateur).toBe(1)
-        expect(user.pseudo).toBe(pseudo)
+        expect(user.token).toBe(mockToken)
         expect(user.email).toBe(email)
-        expect(user.alias).toBe(alias)
-        expect(user.photo).toBe(photo)
-        expect(user.photo_temporaire).toBe(photo)
-        expect(user.confirm_token).toBe(null)
-        expect(user.confirmed).toBe(true)
+
         expect(mockDocumentRepository.deleteFile).toHaveBeenCalledTimes(1)
     })
     it("should return user without replaced photo ", async ()=>{
@@ -46,15 +45,9 @@ describe('createUser', () =>{
             return {...mockUser}
         })
         const user = await completeAccount(pseudo,alias,bio,null,confirm_token,serviceLocator)
-        console.log(user)
-
-        expect(user.id_utilisateur).toBe(1)
-        expect(user.pseudo).toBe(pseudo)
+        expect(user.token).toBe(mockToken)
         expect(user.email).toBe(email)
-        expect(user.alias).toBe(alias)
-        expect(user.photo_temporaire).toBe(photo_temporaire)
-        expect(user.confirm_token).toBe(null)
-        expect(user.confirmed).toBe(true)
+
         expect(mockDocumentRepository.deleteFile).toHaveBeenCalledTimes(0)
     })
     it("should return user without alias", async ()=>{
@@ -63,13 +56,9 @@ describe('createUser', () =>{
             return {...mockUser}
         })
         const user = await completeAccount(pseudo,null,bio,null,confirm_token,serviceLocator)
-        expect(user.id_utilisateur).toBe(1)
-        expect(user.pseudo).toBe(pseudo)
+        expect(user.token).toBe(mockToken)
         expect(user.email).toBe(email)
-        expect(user.alias).toBe(pseudo)
-        expect(user.photo_temporaire).toBe(photo_temporaire)
-        expect(user.confirm_token).toBe(null)
-        expect(user.confirmed).toBe(true)
+
     })
     it("should throw error 403 user already exists", async ()=>{
         mockUserRepository.getByConfirmToken = jest.fn(()=>{

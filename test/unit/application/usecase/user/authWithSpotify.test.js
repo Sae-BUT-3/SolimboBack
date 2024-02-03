@@ -31,7 +31,7 @@ describe('AuthWithSpotifyTest', () =>{
         expect(error.code).toBe(400)
 
     })
-    it("should throw error 500", async ()=>{
+    it("should throw error 403 1", async ()=>{
         mockSpotifyRepository.getToken = jest.fn(()=> {
             return {
                 access_token,
@@ -49,7 +49,28 @@ describe('AuthWithSpotifyTest', () =>{
         const error = await catchError(async () =>{
             await AuthWithSpotify(mockSpotifyCode,serviceLocator)
         })
-        expect(error.code).toBe(500)
+        expect(error.code).toBe(403)
+    })
+    it("should throw error 403 2", async ()=>{
+        mockSpotifyRepository.getToken = jest.fn(()=> {
+            return {
+                access_token,
+                refresh_token
+            }
+        })
+        mockSpotifyRepository.getAccountData = jest.fn(()=> {
+            return {email,display_name,images}
+        })
+        mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+            return {
+                confirmed: true,
+            }
+        })
+        mockAccessTokenManager.generate = jest.fn(() => 'expected_token')
+        const error = await catchError(async () =>{
+            await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+        })
+        expect(error.code).toBe(403)
     })
     it("should return auth token", async ()=>{
         mockSpotifyRepository.getToken = jest.fn(()=> {
@@ -63,13 +84,15 @@ describe('AuthWithSpotifyTest', () =>{
         })
         mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
             return {
-                confirmed: true
+                confirmed: true,
+                refresh_token: 'something'
             }
         })
         mockAccessTokenManager.generate = jest.fn(() => 'expected_token')
         const result =  await AuthWithSpotify(mockSpotifyCode,serviceLocator)
         expect(result.email).toBe(email)
         expect(result.token).toBe("expected_token")
+        expect(mockAccessTokenManager.generate).toHaveBeenCalled()
     })
     it("should return confirm token 1", async ()=>{
         mockSpotifyRepository.getToken = jest.fn(()=> {
@@ -102,7 +125,8 @@ describe('AuthWithSpotifyTest', () =>{
         mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
             return {
                 confirmed: false,
-                confirm_token: "expected_token"
+                confirm_token: "expected_token",
+                refresh_token: "something"
             }
         })
         mockUserRepository.persist = jest.fn(() => 'ok')
