@@ -197,6 +197,15 @@ describe('spotify route', () => {
             expect(res1.statusCode).toBe(200);
         });
 
+        it('should respond code 400', async () => {
+            const res1 = await server.inject({
+                method: 'GET',
+                url: '/spotify/fetchArtistSongs?id=azerty1234&filter= albu , compilation , appears_on ' // mauvaise orthographe sur un filtre
+            });
+            expect(res1.statusCode).toBe(400);
+        });
+
+        
         it('should respond code 400 invalid id', async () => {
             const res1 = await server.inject({
                 method: 'GET',
