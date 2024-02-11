@@ -35,7 +35,8 @@ describe('user route', () => {
             spotifyRepository: mockSpotifyRepository,
             mailRepository: mockMailRepository,
             documentRepository: mockDocumentRepository,
-            followRepository: mockFollowRepository
+            followRepository: mockFollowRepository,
+
         }
         server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
@@ -60,13 +61,6 @@ describe('user route', () => {
         mockSpotifyRepository.getToken= jest.fn(()=> {
             return {access_token: 1, refresh_token: 1}
         })
-        mockSpotifyRepository.getAccountData = jest.fn(()=> {
-            return {
-                email: "testemail@gmail.com",
-                display_name: 'display_name',
-                image: [{url:"testurl"}]
-            }
-        })
         it('should respond code 200 with email inscription', async () => {
 
             const res = await server.inject({
@@ -74,40 +68,12 @@ describe('user route', () => {
                 url: '/users/createUser',
                 payload: {
                     email: "tesddesqt@gmaiL.com",
+                    password: "somepassword"
                 }
             });
+            expect(res.statusCode).toBe(200);
+        });
 
-            expect(res.statusCode).toBe(200);
-            expect(mockSpotifyRepository.getToken).toHaveBeenCalledTimes(0)
-            expect(mockSpotifyRepository.getAccountData).toHaveBeenCalledTimes(0)
-        });
-        it('should respond code 200 with spotify inscription', async () => {
-            const res = await server.inject({
-                method: 'POST',
-                url: '/users/createUser',
-                payload: {
-                    spotify_code: "code",
-                }
-            });
-            expect(res.statusCode).toBe(200);
-            expect(mockSpotifyRepository.getToken).toHaveBeenCalledTimes(1)
-            expect(mockSpotifyRepository.getAccountData).toHaveBeenCalledTimes(1)
-        });
-        it('should respond code 400 with invalid spotify_code', async () => {
-            mockSpotifyRepository.getToken= jest.fn(()=> {
-                return {error: {}}
-            })
-            const res = await server.inject({
-                method: 'POST',
-                url: '/users/createUser',
-                payload: {
-                    spotify_code: "code",
-                }
-            });
-            expect(res.statusCode).toBe(400);
-            expect(mockSpotifyRepository.getToken).toHaveBeenCalledTimes(1)
-            expect(mockSpotifyRepository.getAccountData).toHaveBeenCalledTimes(0)
-        });
         it('should respond code 403 with already existing email', async () => {
             mockUserRepository.getByEmailOrPseudo = jest.fn((email,pseudo)=> 'something')
             const res = await server.inject({
@@ -115,11 +81,10 @@ describe('user route', () => {
                 url: '/users/createUser',
                 payload: {
                     email: "tesddesqt@gmaiL.com",
+                    password: "somepassword"
                 }
             });
             expect(res.statusCode).toBe(403);
-            expect(mockSpotifyRepository.getToken).toHaveBeenCalledTimes(0)
-            expect(mockSpotifyRepository.getAccountData).toHaveBeenCalledTimes(0)
         });
 
     })
@@ -144,7 +109,6 @@ describe('user route', () => {
             const payload = {
                 pseudo: "testPseudo",
                 alias: "testAlias",
-                password: "TestPassword",
                 confirmToken: "token",
                 photo:"path",
                 bio:"bio"
@@ -162,7 +126,6 @@ describe('user route', () => {
             const payload = {
                 pseudo: "testPseudo",
                 alias: "testAlias",
-                password: "TestPassword",
                 confirmToken: "token",
                 bio:"bio"
             }
@@ -180,7 +143,6 @@ describe('user route', () => {
             const payload = {
                 pseudo: "testPseudo",
                 alias: "testAlias",
-                password: "TestPassword",
                 confirmToken: "token",
                 bio:"bio"
             }
@@ -196,7 +158,6 @@ describe('user route', () => {
             const payload = {
                 pseudo: "testPseudo",
                 alias: "testAlias",
-                password: "TestPassword",
                 confirmToken: "token",
                 bio:"bio"
             }
@@ -498,6 +459,110 @@ describe('user route', () => {
                 }
             })
             expect(res.statusCode).toBe(415);
+        })
+    })
+    describe('AuthWithSpotifyTest', () =>{
+        const mockSpotifyCode = 'code'
+        const email = "some@mail"
+        const display_name = "name"
+        const access_token = 'access_token'
+        const refresh_token = 'refresh_token'
+        const images = ["https://i.ytimg.com/vi/uLHdmBf1lvs/hq720.jpg?sqp=-oaymwEXCNAFEJQDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAmH-kUIb43CviOetK-ZjGl0AnSog"]
+        beforeEach(() => {
+            mockUserRepository.updateUser = jest.fn(() => "ok")
+        })
+        it("should throw error 400", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {error: 'some error'}
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                },
+            })
+            expect(res.statusCode).toBe(400)
+
+        })
+        it("should throw error 403 1", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: false
+                }
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(403)
+        })
+        it("should throw error 403 2", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: true,
+                }
+            })
+            mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(403)
+        })
+        it("should return auth token", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: true,
+                    refresh_token: 'someting'
+                }
+            })
+            mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(200)
+
         })
     })
 });
