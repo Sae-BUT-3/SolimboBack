@@ -505,6 +505,7 @@ describe('user route', () => {
                 url: '/users/authWithSpotify',
                 payload: {
                     spotify_code: "eztgergrehre",
+                    callback: "callback"
                 },
             })
             expect(res.statusCode).toBe(403)
@@ -530,6 +531,7 @@ describe('user route', () => {
                 url: '/users/authWithSpotify',
                 payload: {
                     spotify_code: "eztgergrehre",
+                    callback: "callback"
                 },
             })
             expect(res.statusCode).toBe(403)
@@ -556,6 +558,7 @@ describe('user route', () => {
                 url: '/users/authWithSpotify',
                 payload: {
                     spotify_code: "eztgergrehre",
+                    callback: "callback"
                 },
             })
             expect(res.statusCode).toBe(200)

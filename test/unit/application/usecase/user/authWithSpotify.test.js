@@ -26,7 +26,7 @@ describe('AuthWithSpotifyTest', () =>{
             return {error: 'some error'}
         })
         const error = await catchError(async () =>{
-            await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+            await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         })
         expect(error.code).toBe(400)
 
@@ -47,7 +47,7 @@ describe('AuthWithSpotifyTest', () =>{
             }
         })
         const error = await catchError(async () =>{
-            await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+            await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         })
         expect(error.code).toBe(403)
     })
@@ -68,7 +68,7 @@ describe('AuthWithSpotifyTest', () =>{
         })
         mockAccessTokenManager.generate = jest.fn(() => 'expected_token')
         const error = await catchError(async () =>{
-            await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+            await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         })
         expect(error.code).toBe(403)
     })
@@ -89,7 +89,7 @@ describe('AuthWithSpotifyTest', () =>{
             }
         })
         mockAccessTokenManager.generate = jest.fn(() => 'expected_token')
-        const result =  await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+        const result =  await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         expect(result.email).toBe(email)
         expect(result.token).toBe("expected_token")
         expect(mockAccessTokenManager.generate).toHaveBeenCalled()
@@ -108,7 +108,7 @@ describe('AuthWithSpotifyTest', () =>{
             return null
         })
         mockUserRepository.persist = jest.fn(() => 'ok')
-        const result =  await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+        const result =  await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         expect(result.confirmToken).not.toBeNull()
         expect(mockUserRepository.persist).toHaveBeenCalled()
     })
@@ -130,7 +130,7 @@ describe('AuthWithSpotifyTest', () =>{
             }
         })
         mockUserRepository.persist = jest.fn(() => 'ok')
-        const result =  await AuthWithSpotify(mockSpotifyCode,serviceLocator)
+        const result =  await AuthWithSpotify(mockSpotifyCode, 'callback',serviceLocator)
         expect(result.confirmToken).toBe("expected_token")
         expect(mockUserRepository.persist).not.toHaveBeenCalled()
     })
