@@ -431,4 +431,40 @@ describe('user route', () => {
             expect(res.statusCode).toBe(400);
         })
     })
+    describe("/users/status", ()=>{
+        it("should return valid code 200",async ()=>{
+            mockUserRepository.changePrivateStatus = jest.fn((id)=>{
+                return new User({
+                    id_utilisateur : 1,
+                    pseudo : "pseudo",
+                    email : "test@test.fr",
+                    password : "hjkklllllm",
+                    id_role : 1,
+                    
+                })
+            });
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/status',
+                payload: {
+                    id_utilisateur: 1,
+                }}
+            )
+            expect(res.statusCode).toBe(200);
+            expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
+
+        })
+        it("should return valid code 400",async ()=>{
+            mockUserRepository.changePrivateStatus = jest.fn((id)=> null)
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/status',
+                payload: {
+                    id_utilisateur: -1,
+                }}
+            )
+            expect(res.statusCode).toBe(400);
+            expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
+        })
+    })
 });
