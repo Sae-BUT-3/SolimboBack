@@ -2,6 +2,9 @@ const getProfilFriend = require('../../../../../lib/application/use_cases/friend
 const catchError = require("../utils/catchError")
 const mockFriendRepository = {}
 const mockUserRepository = {}
+const mockAccesTokenManager = {}
+
+mockAccesTokenManager.generate = ((test) =>{return ''})
 const relation = {
     id_utilisateur: 1,
     amiIdUtilisateur: 2,
@@ -60,40 +63,33 @@ describe("getProfilFriend", ()=>{
         mockFriendRepository.getById = jest.fn((id, id_ami) => {
             return relation
         })
-    
-       
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
     })
     const serviceLocator = {
         userRepository: mockUserRepository,
-        friendRepository: mockFriendRepository
+        friendRepository: mockFriendRepository,
+        accessTokenManager: mockAccesTokenManager
     }
     it('should accept a request friend of a user', async () => {
 
-        const res = await getProfilFriend(1,2,serviceLocator)
+        const res = await getProfilFriend("testtoken",2,serviceLocator)
         expect(res).toBe(friend)
+        expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(2)
         expect(mockFriendRepository.getById).toHaveBeenCalledTimes(1)
     });
-   
-    it('should throw error 400 invalid id user', async () => {
+
+    it('should throw error 400 invalid id friend', async () => {
         mockUserRepository.getByUser = jest.fn((id)=> {
             return null
         })
         const error = await catchError(async ()=>{
-            await getProfilFriend(-1, 2,serviceLocator)
+            await getProfilFriend("testtoken", -2,serviceLocator)
         })
         expect(error.code).toBe(400)
+        expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
-    });
-    it('should throw error 400 invalid id ami', async () => {
-        mockUserRepository.getByUser = jest.fn((id)=> {
-            return null
-        })
-        const error = await catchError(async ()=>{
-            await getProfilFriend(1, -2,serviceLocator)
-        })
-        expect(error.code).toBe(400)
-        expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
+        expect(mockFriendRepository.getById).toHaveBeenCalledTimes(0)
     })
 
     it('should throw error 403 friendship doesn\'t exist', async () => {
@@ -101,10 +97,11 @@ describe("getProfilFriend", ()=>{
             return null
         })
         const error = await catchError(async ()=>{
-            await getProfilFriend(1, 3,serviceLocator)
+            await getProfilFriend("testtoken", 3,serviceLocator)
         })
         expect(error.code).toBe(403)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(2)
+        expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockFriendRepository.getById).toHaveBeenCalledTimes(1)
     })
    

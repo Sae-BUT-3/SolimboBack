@@ -2,6 +2,9 @@ const acceptRequestUser = require('../../../../../lib/application/use_cases/frie
 const catchError = require("../utils/catchError")
 const mockFriendRepository = {}
 const mockUserRepository = {}
+const mockAccesTokenManager = {}
+
+mockAccesTokenManager.generate = ((test) =>{return ''})
 const relation = {
     id_utilisateur: 1,
     amiIdUtilisateur: 2,
@@ -28,6 +31,7 @@ const user = {
     is_private : true ,
     type :  'user'
 }
+
 describe("acceptRequestUser", ()=>{
     afterEach(()=>{
         jest.clearAllMocks();
@@ -40,36 +44,28 @@ describe("acceptRequestUser", ()=>{
         mockFriendRepository.accept = jest.fn((id, id_ami) => {
             return relation
         })
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
     })
     
     const serviceLocator = {
         userRepository: mockUserRepository,
-        friendRepository: mockFriendRepository
+        friendRepository: mockFriendRepository,
+        accessTokenManager:mockAccesTokenManager
     }
     it('should accept a request friend of a user', async () => {
 
-        const user = await acceptRequestUser(1,2,serviceLocator)
+        const user = await acceptRequestUser("testtoken",2,serviceLocator)
         expect(user).toBe(relation)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(2)
         expect(mockFriendRepository.accept).toHaveBeenCalledTimes(1)
     });
    
-    it('should throw error 400 invalid id user', async () => {
+    it('should throw error 400 invalid id friend', async () => {
         mockUserRepository.getByUser = jest.fn((id)=> {
             return null
         })
         const error = await catchError(async ()=>{
-            await acceptRequestUser(-1, 2,serviceLocator)
-        })
-        expect(error.code).toBe(400)
-        expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
-    });
-    it('should throw error 400 invalid id ami', async () => {
-        mockUserRepository.getByUser = jest.fn((id)=> {
-            return null
-        })
-        const error = await catchError(async ()=>{
-            await acceptRequestUser(1, -2,serviceLocator)
+            await acceptRequestUser("testtoken", -2,serviceLocator)
         })
         expect(error.code).toBe(400)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
@@ -80,7 +76,7 @@ describe("acceptRequestUser", ()=>{
             return null
         })
         const error = await catchError(async ()=>{
-            await acceptRequestUser(1, 3,serviceLocator)
+            await acceptRequestUser("testtoken", 3,serviceLocator)
         })
         expect(error.code).toBe(403)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(2)

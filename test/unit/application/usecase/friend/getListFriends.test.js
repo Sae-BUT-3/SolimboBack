@@ -2,6 +2,9 @@ const getListFriends = require('../../../../../lib/application/use_cases/friend/
 const catchError = require("../utils/catchError")
 const mockFriendRepository = {}
 const mockUserRepository = {}
+const mockAccesTokenManager = {}
+
+mockAccesTokenManager.generate = ((test) =>{return ''})
 const friends = [
     {
         id_utilisateur : 1,
@@ -61,31 +64,38 @@ describe("getListFriends", ()=>{
     afterEach(()=>{
         jest.clearAllMocks();
     })
-    mockUserRepository.getByUser = jest.fn((id => user))
-    mockFriendRepository.getListFriendsById = jest.fn((user) => {
-        return friends
+    beforeEach(()=>{
+        mockUserRepository.getByUser = jest.fn((id => user))
+        mockFriendRepository.getListFriendsById = jest.fn((user) => {
+            return friends
+        })
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
     })
-   
+    
     const serviceLocator = {
         userRepository: mockUserRepository,
-        friendRepository: mockFriendRepository
+        friendRepository: mockFriendRepository,
+        accessTokenManager:mockAccesTokenManager
     }
     it('should return list friends of a user', async () => {
 
-        const user = await getListFriends(3,serviceLocator)
+        const user = await getListFriends("testtoken",serviceLocator)
         expect(user).toBe(friends)
+        expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
         expect(mockFriendRepository.getListFriendsById).toHaveBeenCalledTimes(1)
     });
-   
-    it('should throw error 400 invalid id user', async () => {
+
+    it('should throw error 400 invalid token user', async () => {
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: -1}})
         mockUserRepository.getByUser = jest.fn((id)=> {
             return null
         })
         const error = await catchError(async ()=>{
-            await getListFriends(-1,serviceLocator)
+            await getListFriends("testtoken", serviceLocator)
         })
         expect(error.code).toBe(400)
+        expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
     });
    
