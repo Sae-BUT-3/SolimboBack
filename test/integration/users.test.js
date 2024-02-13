@@ -25,7 +25,6 @@ mockAccesTokenManager.generate = ((test) =>{return ''})
 describe('user route', () => {
 
     beforeEach(async () => {
-
         server = Hapi.server({
             port: process.env.PORT || 3000
         });
@@ -401,7 +400,6 @@ describe('user route', () => {
         })
     })
     describe("/users/follow", ()=>{
-
         it("should return valid code 200",async ()=>{
             mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
             mockUserRepository.getByUser = jest.fn(() => "something")
@@ -563,6 +561,30 @@ describe('user route', () => {
             })
             expect(res.statusCode).toBe(200)
 
+        })
+    })
+    describe("/users/status", ()=>{
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
+        mockUserRepository.changePrivateStatus = jest.fn((id)=>{
+            return new User({
+                id_utilisateur : 1,
+                pseudo : "pseudo",
+                email : "test@test.fr",
+                password : "hjkklllllm",
+                id_role : 1,
+                
+            })
+        });
+        it("should return valid code 200",async ()=>{
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/status',
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(200);
+            expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
         })
     })
 });
