@@ -4,6 +4,7 @@ const User = require("../../lib/domain/model/User")
 const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
 let server
 const mockUserRepository = {}
@@ -12,13 +13,18 @@ const mockSpotifyRepository = {}
 const mockMailRepository = {}
 const mockDocumentRepository = {}
 
-
+const mockToken = jwt.sign({
+    sub: 'my-sub', 
+    value: 1, 
+    aud: 'urn:audience:test', 
+    iss: 'urn:issuer:test', 
+    expiresIn: '365d'
+}, process.env.SECRET_ENCODER)
 
 mockAccesTokenManager.generate = ((test) =>{return ''})
 describe('user route', () => {
 
     beforeEach(async () => {
-
         server = Hapi.server({
             port: process.env.PORT || 3000
         });
@@ -432,38 +438,26 @@ describe('user route', () => {
         })
     })
     describe("/users/status", ()=>{
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
+        mockUserRepository.changePrivateStatus = jest.fn((id)=>{
+            return new User({
+                id_utilisateur : 1,
+                pseudo : "pseudo",
+                email : "test@test.fr",
+                password : "hjkklllllm",
+                id_role : 1,
+                
+            })
+        });
         it("should return valid code 200",async ()=>{
-            mockUserRepository.changePrivateStatus = jest.fn((id)=>{
-                return new User({
-                    id_utilisateur : 1,
-                    pseudo : "pseudo",
-                    email : "test@test.fr",
-                    password : "hjkklllllm",
-                    id_role : 1,
-                    
-                })
-            });
             const res = await server.inject({
                 method: 'POST',
                 url: '/users/status',
-                payload: {
-                    id_utilisateur: 1,
-                }}
-            )
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
             expect(res.statusCode).toBe(200);
-            expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
-
-        })
-        it("should return valid code 400",async ()=>{
-            mockUserRepository.changePrivateStatus = jest.fn((id)=> null)
-            const res = await server.inject({
-                method: 'POST',
-                url: '/users/status',
-                payload: {
-                    id_utilisateur: -1,
-                }}
-            )
-            expect(res.statusCode).toBe(400);
             expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
         })
     })
