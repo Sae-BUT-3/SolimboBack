@@ -124,7 +124,7 @@ describe('AuthWithSpotifyTest', () =>{
         })
         mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
             return {
-                confirmed: false,
+                auth_with_spotify: true,
                 confirm_token: "expected_token",
                 refresh_token: "something"
             }
