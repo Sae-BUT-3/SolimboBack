@@ -399,18 +399,183 @@ describe('user route', () => {
             expect(res.statusCode).toBe(400);
         })
     })
-    describe("/users/status", ()=>{
+    describe("/users/follow", ()=>{
         it("should return valid code 200",async ()=>{
-            mockUserRepository.changePrivateStatus = jest.fn((id)=>{
-                return new User({
-                    id_utilisateur : 1,
-                    pseudo : "pseudo",
-                    email : "test@test.fr",
-                    password : "hjkklllllm",
-                    id_role : 1,
-                    
-                })
-            });
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>"something")
+            mockFollowRepository.doesFollows = jest.fn(()=> true)
+            mockFollowRepository.follow = jest.fn(()=> {})
+            mockFollowRepository.unfollow = jest.fn(()=> {})
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(200);
+        })
+        it("should return error code 401",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => null)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(401);
+        })
+        it("should return return invalid code 415",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => "something")
+            mockSpotifyRepository.getSpotifyArtist = jest.fn(()=>{
+                return {
+                    error: {
+                        status:415,
+                        message: "message"
+                    }
+                }
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/follow',
+                payload: {
+                    artistId: "eztgergrehre",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(415);
+        })
+    })
+    describe('AuthWithSpotifyTest', () =>{
+        const mockSpotifyCode = 'code'
+        const email = "some@mail"
+        const display_name = "name"
+        const access_token = 'access_token'
+        const refresh_token = 'refresh_token'
+        const images = ["https://i.ytimg.com/vi/uLHdmBf1lvs/hq720.jpg?sqp=-oaymwEXCNAFEJQDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAmH-kUIb43CviOetK-ZjGl0AnSog"]
+        beforeEach(() => {
+            mockUserRepository.updateUser = jest.fn(() => "ok")
+        })
+        it("should throw error 400", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {error: 'some error'}
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                },
+            })
+            expect(res.statusCode).toBe(400)
+
+        })
+        it("should throw error 403 1", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: false
+                }
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(403)
+        })
+        it("should throw error 403 2", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: true,
+                }
+            })
+            mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(403)
+        })
+        it("should return auth token", async ()=>{
+            mockSpotifyRepository.getToken = jest.fn(()=> {
+                return {
+                    access_token,
+                    refresh_token
+                }
+            })
+            mockSpotifyRepository.getAccountData = jest.fn(()=> {
+                return {email,display_name,images}
+            })
+            mockUserRepository.getByEmailOrPseudo = jest.fn(()=> {
+                return {
+                    confirmed: true,
+                    refresh_token: 'someting'
+                }
+            })
+            mockAccesTokenManager.generate = jest.fn(() => 'expected_token')
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/authWithSpotify',
+                payload: {
+                    spotify_code: "eztgergrehre",
+                    callback: "callback"
+                },
+            })
+            expect(res.statusCode).toBe(200)
+
+        })
+    })
+    describe("/users/status", ()=>{
+        mockAccesTokenManager.decode = jest.fn((token)=> {return {value: 1}})
+        mockUserRepository.changePrivateStatus = jest.fn((id)=>{
+            return new User({
+                id_utilisateur : 1,
+                pseudo : "pseudo",
+                email : "test@test.fr",
+                password : "hjkklllllm",
+                id_role : 1,
+                
+            })
+        });
+        it("should return valid code 200",async ()=>{
             const res = await server.inject({
                 method: 'POST',
                 url: '/users/status',

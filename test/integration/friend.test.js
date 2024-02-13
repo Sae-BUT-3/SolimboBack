@@ -282,17 +282,37 @@ describe('friend route', () => {
                 method: 'POST',
                 url: '/amis/profil',
                 payload: {
-                    amiIdUtilisateur: 2
+                    amiIdUtilisateur: -1
                 },
                 headers: {
                     Authorization: `Bearer ${mockToken}`
                 }
             });
+            console.log(res)
             expect(res.statusCode).toBe(400);
-            expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)
+            expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(3)
             expect(mockFriendRepository.getById).toHaveBeenCalledTimes(0)
         });
-
+        it('should respond code 200', async () => {
+            mockUserRepository.getByUser= jest.fn((id)=> {
+                if(id > 0) return new User({pseudo:"test", id_utilisateur:id, email: "test@gmail.com", alias: "testt", is_private: false})
+                return null
+            })
+            const res = await server.inject({
+                method: 'POST',
+                url: '/amis/profil',
+                payload: {
+                    amiIdUtilisateur: 3
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            console.log(res)
+            expect(res.statusCode).toBe(200);
+            expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(3)
+            expect(mockFriendRepository.getById).toHaveBeenCalledTimes(1)
+        });
         it('should respond code 403 with frindship doesn\'t exist', async () => {
             mockFriendRepository.getById = jest.fn((id, id_ami)=> {
                 return null
@@ -309,7 +329,7 @@ describe('friend route', () => {
             });
             expect(res.statusCode).toBe(403);
             expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
-            expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(2)
+            expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(3)
             expect(mockFriendRepository.getById).toHaveBeenCalledTimes(1)
         });
 
