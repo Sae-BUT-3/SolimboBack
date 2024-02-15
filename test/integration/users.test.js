@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const strategy = require("../../lib/infrastructure/config/strategy");
 const Jwt = require("@hapi/jwt");
 const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 require('dotenv').config()
 let server
 const mockUserRepository = {}
