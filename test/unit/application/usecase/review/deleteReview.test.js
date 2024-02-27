@@ -1,4 +1,4 @@
-const deleteReview = require("./../../../../../lib/application/use_cases/solimbo/review/deleteReview")
+const deleteReview = require("./../../../../../lib/application/use_cases/review/deleteReview")
 const catchError = require("../utils/catchError")
 describe("deleteReview Test", ()=>{
     const mockReviewRepository = {}

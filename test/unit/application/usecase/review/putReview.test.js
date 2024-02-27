@@ -1,4 +1,4 @@
-const putReview = require("../../../../../lib/application/use_cases/solimbo/review/putReview")
+const putReview = require("../../../../../lib/application/use_cases/review/putReview")
 const catchError = require("../utils/catchError")
 describe("putReview Test", ()=>{
     const idOeuvre = 'idOeuvre'

@@ -1,4 +1,4 @@
-const likeReview = require("../../../../../lib/application/use_cases/solimbo/review/likeReview")
+const likeReview = require("../../../../../lib/application/use_cases/review/likeReview")
 const catchError = require("../utils/catchError")
 describe("likeReview Test", ()=>{
     const mockReviewRepository = {}

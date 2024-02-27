@@ -274,4 +274,208 @@ describe('review route', () => {
         })
     })
     
+    describe("GET userReviews route", ()=>{
+        it("should return status code 200", async ()=>{
+            mockUserRepository.getByEmailOrPseudo = jest.fn((pseudo,email) => {
+                return {
+                    id_utilisateur: 1,
+                    is_private: false
+                }
+            })
+            mockReviewRepository.getReviewByUserId = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/reviews/user/{id}?page=1&pageSize=10&orderByLike=true`,
+            });
+            expect(res1.statusCode).toBe(200);
+        })
+
+        it("should return status code 403", async ()=>{
+            mockUserRepository.getByEmailOrPseudo = jest.fn((pseudo,email) => {
+                return {
+                    id_utilisateur: 1,
+                    is_private: true
+                }
+            })
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/reviews/user/{id}?page=1&pageSize=10&orderByLike=true`,
+            });
+            expect(res1.statusCode).toBe(403);
+        })
+    })
+
+    describe("GET reviewLike route",()=>{
+        it("should return status code 200", async ()=>{
+            const mockReview = {
+                utilisateur: {
+                    id_utilisateur: 1,
+                    pseudo: "John Doe",
+                    is_private: false
+                }
+            }
+            const mockUser = {
+                id_utilisateur: 1,
+                pseudo: "John Doe",
+                alias: "John",
+                ban_until: null,
+                email: "testemail@gmail",
+                id_role: 1,
+                photo: null,
+                photo_temporaire: null,
+                type: "user",
+                is_private: false
+                
+            }
+            mockReviewRepository.getById = jest.fn((id) => mockReview)
+            mockReviewRepository.getLikes = jest.fn((id) => [mockUser])
+
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/review/1/likes?page=1&pageSize=10`,
+            });
+            expect(res1.statusCode).toBe(200);
+        })
+
+        it("should return status code 403", async ()=>{
+            
+            const mockReview = {
+                utilisateur: {
+                    id_utilisateur: 1,
+                    pseudo: "John Doe",
+                    is_private: true
+                }
+            }
+            mockReviewRepository.getById = jest.fn((id) => mockReview)
+            mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
+            mockFriendRepository.areFriends = jest.fn((id, id_ami) => false)
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/review/1/likes?page=1&pageSize=10`,
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            expect(res1.statusCode).toBe(403);
+
+        })
+        it("should return status code 404", async ()=>{
+            
+            mockReviewRepository.getById = jest.fn((id) => null)
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/review/1/likes?page=1&pageSize=10`,
+            });
+            expect(res1.statusCode).toBe(404);
+
+        })
+    })
+
+    describe("PUT review route",()=>{
+        it("should return status code 200", async ()=>{
+            mockUserRepository.getByUser =  jest.fn((userToken) => {
+                return {
+                    id_utilisateur: 1
+                }
+            })
+            mockReviewRepository.getByUserAndId =  jest.fn((idOeuvre, id_utilisateur) => null)
+            mockReviewRepository.getTypeReviewID = jest.fn((type) => 1)
+            mockReviewRepository.persist = jest.fn((reviewRaw) => rawReview)
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
+            mockAccesTokenManager.decode =  jest.fn((userToken) => 1)
+            const res1 = await server.inject({
+                method: 'PUT',
+                url: `/review`,
+                payload: {
+                    idOeuvre: 'idOeuvre',
+                    description: 'description',
+                    note: 5,
+                    type: 'artist'
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            expect(res1.statusCode).toBe(200);
+        })
+
+        it("should return status code 400", async ()=>{
+            mockAccesTokenManager.decode =  jest.fn((userToken) => 1)
+            mockUserRepository.getByUser =  jest.fn((userToken) => {
+                return {
+                    id_utilisateur: 1
+                }
+            })
+            mockReviewRepository.getByUserAndId =  jest.fn((idOeuvre, id_utilisateur) => null)
+            mockReviewRepository.getTypeReviewID = jest.fn((type) => 1)
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => {
+                return {
+                    error: {
+                        status: 400,
+                        message: 'error'
+                    }
+                }
+            })
+            const res1 = await server.inject({
+                method: 'PUT',
+                url: `/review`,
+                payload: {
+                    idOeuvre: 'idOeuvre',
+                    description: 'description',
+                    note: 5,
+                    type: 'artist'
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            expect(res1.statusCode).toBe(400);
+        })
+        it("should return status code 401", async ()=>{
+            mockAccesTokenManager.decode =  jest.fn((userToken) => 1)
+            mockUserRepository.getByUser =  jest.fn((userToken) => null)
+            const res1 = await server.inject({
+                method: 'PUT',
+                url: `/review`,
+                payload: {
+                    idOeuvre: 'idOeuvre',
+                    description: 'description',
+                    note: 5,
+                    type: 'artist'
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            expect(res1.statusCode).toBe(401);
+        })
+        it("should return status code 403", async ()=>{
+            mockAccesTokenManager.decode =  jest.fn((userToken) => 1)
+            mockUserRepository.getByUser =  jest.fn((userToken) => {
+                return {
+                    id_utilisateur: 1
+                }
+            })
+            mockReviewRepository.getByUserAndId =  jest.fn((idOeuvre, id_utilisateur) => {
+                return {
+                    id_review: 1
+                }
+            })
+            const res1 = await server.inject({
+                method: 'PUT',
+                url: `/review`,
+                payload: {
+                    idOeuvre: 'idOeuvre',
+                    description: 'description',
+                    note: 5,
+                    type: 'artist'
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            });
+            expect(res1.statusCode).toBe(403);
+        })
+    })
 });

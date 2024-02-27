@@ -1,4 +1,4 @@
-const getReviewLikes = require("./../../../../../lib/application/use_cases/solimbo/review/getReviewLikes")
+const getReviewLikes = require("./../../../../../lib/application/use_cases/review/getReviewLikes")
 const catchError = require("../utils/catchError")
 const {
     mockUser,

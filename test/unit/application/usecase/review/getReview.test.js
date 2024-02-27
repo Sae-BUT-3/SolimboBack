@@ -1,4 +1,4 @@
-const getReview = require("../../../../../lib/application/use_cases/solimbo/review/getReview")
+const getReview = require("../../../../../lib/application/use_cases/review/getReview")
 const catchError = require("../utils/catchError")
 
 const {

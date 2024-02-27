@@ -1,4 +1,4 @@
-const getUserReviews = require("../../../../../lib/application/use_cases/solimbo/review/getUserReviews")
+const getUserReviews = require("../../../../../lib/application/use_cases/review/getUserReviews")
 const catchError = require("../utils/catchError")
 const {
     mockArtist,
@@ -31,6 +31,7 @@ describe("getReviews Test", ()=>{
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             const expectedReviews = [expectedReview]
             const result = await getUserReviews(1,'token',1,10,true, serviceLocator)
+            expect(result).toEqual(expectedReviews)
         })
         it("should return serialized review with private user", async ()=>{
             mockUserRepository.getByEmailOrPseudo = jest.fn((pseudo,email) => {
@@ -47,6 +48,7 @@ describe("getReviews Test", ()=>{
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             const expectedReviews = [expectedReview]
             const result = await getUserReviews(1,'token',1,10,true, serviceLocator)
+            expect(result).toEqual(expectedReviews)
         })
     })
     describe("invalid cases", ()=>{

@@ -1,4 +1,4 @@
-const getReviews = require("../../../../../lib/application/use_cases/solimbo/review/getReviews")
+const getReviews = require("../../../../../lib/application/use_cases/review/getReviews")
 
 const {
     mockArtist,

@@ -68,11 +68,7 @@ const expectedReview = {
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
         name: "Bob Marley",
-        images: {
-            height: 640,
-            url: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
-            width: 640
-        },
+        image: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
         spotify_url: "https://open.spotify.com/artist/32kWZXLpwGm5Y2B0lKb6Ii",
         popularity: 79,
         genres: ["Reggae", "Roots"],
@@ -106,11 +102,7 @@ const expectedPrivate = {
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
         name: "Bob Marley",
-        images: {
-            height: 640,
-            url: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
-            width: 640
-        },
+        image: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
         spotify_url: "https://open.spotify.com/artist/32kWZXLpwGm5Y2B0lKb6Ii",
         popularity: 79,
         genres: ["Reggae", "Roots"],
