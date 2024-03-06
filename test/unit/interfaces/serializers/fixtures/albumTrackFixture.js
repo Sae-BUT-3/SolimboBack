@@ -118,23 +118,7 @@ const expectedAlbumOneArtist = {
     popularity:0,
     release_date:"2009-02-16",
     spotify_url: "https://open.spotify.com/album/17UiqpQyl8T8vVxz2Towjy",
-    images:[
-        {
-            url:"https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-            height:640,
-            width:640
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d00001e020b2e3999b189fa2a8a6a752f",
-            height:300,
-            width:300
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d000048510b2e3999b189fa2a8a6a752f",
-            height:64,
-            width:64
-        }
-    ],
+    image: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
     artists:[
         expectedFixture
     ],
@@ -192,23 +176,7 @@ const expectedAlbumSeveralArtist = {
     popularity:0,
     release_date:"2009-02-16",
     spotify_url: "https://open.spotify.com/album/17UiqpQyl8T8vVxz2Towjy",
-    images:[
-        {
-            url:"https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-            height:640,
-            width:640
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d00001e020b2e3999b189fa2a8a6a752f",
-            height:300,
-            width:300
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d000048510b2e3999b189fa2a8a6a752f",
-            height:64,
-            width:64
-        }
-    ],
+    image: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
     artists:[
         expectedFixture,
         expectedFixture
@@ -259,23 +227,7 @@ const expectedAlbumNoArtist = {
     popularity:0,
     release_date:"2009-02-16",
     spotify_url: "https://open.spotify.com/album/17UiqpQyl8T8vVxz2Towjy",
-    images:[
-        {
-            url:"https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
-            height:640,
-            width:640
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d00001e020b2e3999b189fa2a8a6a752f",
-            height:300,
-            width:300
-        },
-        {
-            url:"https://i.scdn.co/image/ab67616d000048510b2e3999b189fa2a8a6a752f",
-            height:64,
-            width:64
-        }
-    ],
+    image: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
     artists: undefined,
     tracks: [
         expectedRawTrackWithNoArtist
