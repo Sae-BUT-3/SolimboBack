@@ -1,4 +1,4 @@
-const getAlbum = require("../../../../../lib/application/use_cases/spotify/getalbum")
+const getAlbum = require("../../../../../lib/application/use_cases/spotify/getAlbum")
 
 const {
     albumRawOneArtist,
