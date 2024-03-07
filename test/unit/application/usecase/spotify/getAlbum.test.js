@@ -13,7 +13,7 @@ const mockSpotifyRepository = {}
 
 
 describe('get an album usecase', () => {
-    it("should return an album with one artist", async ()=>{
+    it("should return an album with one artist 1", async ()=>{
         mockSpotifyRepository.getSpotifyAlbums = jest.fn((id) =>{
             return albumRawOneArtist
         })
@@ -24,7 +24,7 @@ describe('get an album usecase', () => {
         result.popularity = 0
         expect(result).toEqual(expectedAlbumOneArtist)
     })
-    it("should return an album with one artist", async ()=>{
+    it("should return an album with one artist 2", async ()=>{
         mockSpotifyRepository.getSpotifyAlbums = jest.fn((id) =>{
             return albumRawSeveralArtist
         })
@@ -35,7 +35,7 @@ describe('get an album usecase', () => {
         result.popularity = 0
         expect(result).toEqual(expectedAlbumSeveralArtist)
     })
-    it("should return an album with one artist", async ()=>{
+    it("should return an album with one artist 3", async ()=>{
         mockSpotifyRepository.getSpotifyAlbums = jest.fn((id) =>{
             return albumRawNoArtist
         })
