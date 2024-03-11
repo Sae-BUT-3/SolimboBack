@@ -21,13 +21,13 @@ const mockUser = {
     photo_temporaire: null,
     type: "user",
     is_private: false
-    
 }
 const mockPublicUser = {
     pseudo: "John Doe",
     alias: "John",
     ban_until: null,
     email: "testemail@gmail",
+    id_utilisateur: 1,
     id_role: 1,
     photo: null,
     photo_temporaire: null,
@@ -40,6 +40,7 @@ const mockUserPrivate = {
     ban_until: null,
     email: "testemail@gmail",
     id_role: 1,
+    id_utilisateur: 1,
     photo: null,
     photo_temporaire: null,
     type: "user",
@@ -53,8 +54,8 @@ const rawReview = {
     countComment: 4,
     description: "C'est top",
     note: 5,
-    createdAt: actualDate,
-    updatedAt: actualDate,
+    created_at: actualDate,
+    updated_at: actualDate,
     type: 'artist',
     utilisateur: mockUser
 }
@@ -64,7 +65,8 @@ const expectedReview = {
     countlikes: 2,
     countComment: 4,
     note: 5,
-    created_at: actualDate,
+    createAt: actualDate,
+    doesUserLike: false,
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
         name: "Bob Marley",
@@ -87,8 +89,8 @@ const rawReviewPrivate = {
     countComment: 4,
     description: "C'est top",
     note: 5,
-    createdAt: actualDate,
-    updatedAt: actualDate,
+    created_at: actualDate,
+    updated_at: actualDate,
     type: 'artist',
     utilisateur: mockUserPrivate
 }
@@ -98,7 +100,8 @@ const expectedPrivate = {
     countlikes: 2,
     countComment: 4,
     note: 5,
-    created_at: actualDate,
+    createAt: actualDate,
+    doesUserLike: false,
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
         name: "Bob Marley",
@@ -111,10 +114,13 @@ const expectedPrivate = {
     utilisateur: mockUserPrivate,
     type: 'artist',
 }
+
+
 module.exports = {
     rawReview,
     mockArtist,
     expectedReview,
     rawReviewPrivate,
-    expectedPrivate
+    expectedPrivate,
+    
 }

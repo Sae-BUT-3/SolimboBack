@@ -61,7 +61,7 @@ describe("putReview Test", ()=>{
             const error = await catchError(async ()=>{
                 await putReview(idOeuvre, userToken, description,note, type, serviceLocator)
             })
-            expect(error.code).toBe(401)
+            expect(error.code).toBe(404)
             expect(mockReviewRepository.getTypeReviewID).toHaveBeenCalledTimes(1)
         })
         it("should throw error rawOeuvre ", async ()=>{

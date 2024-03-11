@@ -288,7 +288,6 @@ describe('friend route', () => {
                     Authorization: `Bearer ${mockToken}`
                 }
             });
-            console.log(res)
             expect(res.statusCode).toBe(400);
             expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(3)
             expect(mockFriendRepository.getById).toHaveBeenCalledTimes(0)
@@ -308,7 +307,6 @@ describe('friend route', () => {
                     Authorization: `Bearer ${mockToken}`
                 }
             });
-            console.log(res)
             expect(res.statusCode).toBe(200);
             expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(3)
             expect(mockFriendRepository.getById).toHaveBeenCalledTimes(1)
