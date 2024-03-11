@@ -15,6 +15,7 @@ const mockPublicUser = {
     pseudo: "John Doe",
     alias: "John",
     ban_until: null,
+    id_utilisateur: 1,
     email: "testemail@gmail",
     id_role: 1,
     photo: null,

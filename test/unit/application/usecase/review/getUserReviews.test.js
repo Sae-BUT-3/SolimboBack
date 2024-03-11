@@ -17,7 +17,7 @@ describe("getReviews Test", ()=>{
         accessTokenManager: mockAccesTokenManager,
         spotifyRepository: mockSpotifyRepository,
         userRepository: mockUserRepository,
-        friendRepository: mockFriendRepository
+        friendRepository: mockFriendRepository,
     }
     describe("successful cases", ()=>{
         it("should return serialized review with public user", async ()=>{
@@ -46,6 +46,7 @@ describe("getReviews Test", ()=>{
             mockFriendRepository.areFriends = jest.fn((id, id_ami) => true)
             mockReviewRepository.getReviewByUserId = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
+            mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
             const expectedReviews = [expectedReview]
             const result = await getUserReviews(1,'token',1,10,true, serviceLocator)
             expect(result).toEqual(expectedReviews)

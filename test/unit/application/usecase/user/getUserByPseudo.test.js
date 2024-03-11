@@ -16,6 +16,7 @@ const mockUser = {
     type:'user',
 }
 const expectedUser = {
+    id_utilisateur:1,
     pseudo:'pseudo',
     alias:'alias',
     email:'testemail@gmail.com',
