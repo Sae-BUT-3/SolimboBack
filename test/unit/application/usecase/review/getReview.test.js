@@ -23,21 +23,23 @@ describe("getReview Test", ()=>{
     }
 
     describe("successful cases", () => {
-        it("should return review from repository", async () => {
+        it("should return review with artist from repository", async () => {
             mockReviewRepository.getById = jest.fn((id) => rawReview)
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             const result = await getReview(1,undefined, serviceLocator)
+            console.log(result)
             expect(result).toEqual(expectedReview)
         })
-    
-        it("should return review private from repository", async () => {
+        it("should return review with artist private from repository", async () => {
             mockReviewRepository.getById = jest.fn((id) => rawReviewPrivate)
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             mockFriendRepository.areFriends = jest.fn((id, id_ami) => true)
             mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
+            mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
             const result = await getReview(1,'something', serviceLocator)
             expect(result).toEqual(expectedPrivate)
         })
+        
     })
     describe("invalid cases", () => {
         it("should throw review not found error", async () => {
