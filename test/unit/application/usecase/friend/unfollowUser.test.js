@@ -69,7 +69,6 @@ describe("unfollowUser", ()=>{
         const error = await catchError(async ()=>{
             await unfollowUser("testtoken",-2,serviceLocator)
         })
-        console.log(error)
         expect(error.code).toBe(400)
         expect(mockAccesTokenManager.decode).toHaveBeenCalledTimes(1)
         expect(mockUserRepository.getByUser).toHaveBeenCalledTimes(1)

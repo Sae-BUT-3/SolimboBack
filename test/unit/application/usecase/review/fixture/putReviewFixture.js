@@ -25,6 +25,7 @@ const mockUser = {
 }
 const mockPublicUser = {
     pseudo: "John Doe",
+    id_utilisateur:1,
     alias: "John",
     ban_until: null,
     email: "testemail@gmail",
@@ -53,8 +54,8 @@ const rawReview = {
     countComment: 4,
     description: "C'est top",
     note: 5,
-    createdAt: actualDate,
-    updatedAt: actualDate,
+    created_at: actualDate,
+    updated_at: actualDate,
     type: 'artist',
     utilisateur: mockUser
 }
@@ -64,7 +65,8 @@ const expectedReview = {
     countlikes: 2,
     countComment: 4,
     note: 5,
-    created_at: actualDate,
+    createAt: actualDate,
+    doesUserLike: false,
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
         name: "Bob Marley",
