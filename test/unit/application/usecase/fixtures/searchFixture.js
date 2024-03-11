@@ -28,12 +28,14 @@ const SpotifyRepositoryFixture = {
 }
 const expectedSearchResult = [
     {
+        id: "4FpJcNgOvIpSBeJgRg3OfN",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "",
         title: "Orelsan",
         type: "artist"
     },
     {
+        id: "17UiqpQyl8T8vVxz2Towjy",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "Orelsan",
         title: "Perdu D'Avance",
@@ -41,6 +43,7 @@ const expectedSearchResult = [
     },
 
     {
+        id: "test_id",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "Orelsan",
         title: "test_name",
@@ -49,12 +52,14 @@ const expectedSearchResult = [
 ]
 const expectedSearchResultWithUsers = [
     {
+        id: "4FpJcNgOvIpSBeJgRg3OfN",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "",
         title: "Orelsan",
         type: "artist"
     },
     {
+        id: "17UiqpQyl8T8vVxz2Towjy",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "Orelsan",
         title: "Perdu D'Avance",
@@ -62,12 +67,14 @@ const expectedSearchResultWithUsers = [
     },
 
     {
+        id: "test_id",
         imageURL: "https://i.scdn.co/image/ab67616d0000b2730b2e3999b189fa2a8a6a752f",
         subtitle: "Orelsan",
         title: "test_name",
         type: "track"
     },
     {
+        id: "id_utilisateur",
         imageURL: "photo",
         subtitle: "pseudo",
         title: "alias",

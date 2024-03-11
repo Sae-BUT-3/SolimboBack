@@ -133,7 +133,6 @@ describe('FetchArtistSongs usecase', () => {
             expect(mockSpotifyRepository.getSpotifyArtistSongs).toHaveBeenCalledWith(id,"album,single" , 2) 
     })
 
-console.log("ONE PIECE")
     it("should return throw an error 400", async ()=>{
         mockSpotifyRepository.getSpotifyArtistSongs = jest.fn((id, filter, limit) =>{
             throw new Error('test error')

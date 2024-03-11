@@ -130,6 +130,7 @@ describe('review route', () => {
         it("should return status code 200 with user login", async ()=>{
             mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
             mockReviewRepository.getReviews = jest.fn((page,pageSize,orderByLike, isPrivate,userToken) => [rawReview])
+            mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             const res1 = await server.inject({
                 method: 'GET',

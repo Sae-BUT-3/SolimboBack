@@ -11,6 +11,9 @@ def getRandomImageURL():
     file = f"00{folder}{'000'[len(str(val)):] + str(val)}"
 
     return f"{baseUrl}/0/{folder}/{file}.jpg"
+
+
+
 def insertUser(cursor,pseudo,password,bio):
     
     try:
@@ -44,6 +47,35 @@ def insertUser(cursor,pseudo,password,bio):
         print(f"Erreur lors de l'insertion dans la base de données : {err}")
  
     return user_id
+
+def insert_follow(cursor,ids,artists):
+    date = faker.Faker().date_between(start_date='-1y', end_date='today')
+    for artist in artists:
+        data_to_insert = {
+            "createdAt": date,
+            "updatedAt": date,
+            "nb_suivis": 0,
+            "id_artiste": artist,
+        }
+        insert_reponse = """
+            INSERT INTO `artiste`(`nb_suivis`,`id_artiste`, `createdAt`, `updatedAt` ) 
+            VALUES (%(nb_suivis)s,%(id_artiste)s,%(createdAt)s,%(updatedAt)s)
+        """
+        cursor.execute(insert_reponse, data_to_insert)
+    for artist in artists:
+        for id_utilisateur in ids:
+            if(random.random() > 0.85): continue
+            data_to_insert = {
+                "createdAt": date,
+                "updatedAt": date,
+                "id_utilisateur": id_utilisateur,
+                "id_artiste": artist,
+            }
+            insert_reponse = """
+                INSERT INTO `follow`(`id_utilisateur`,`id_artiste`, `createdAt`, `updatedAt` ) 
+                VALUES (%(id_utilisateur)s,%(id_artiste)s,%(createdAt)s,%(updatedAt)s)
+            """
+            cursor.execute(insert_reponse, data_to_insert)
 def putReponse(cursor,reponse,ids, review_ids):
     reponse_ids = []
     for i in range(len(review_ids)):
@@ -246,6 +278,15 @@ track_ids = [
     "5LI7PoHEolR8plrf3I16sq",
     "5H6Jp0syB5yEPk7SWYdlmk",
 ]
+
+artists = [
+    '6mEQK9m2krja6X1cfsAjfl',
+    '7yeFMUrYTY5cAZx0GKXnti',
+    '7Ln80lUS6He07XvHI8qqHH',
+    '13ubrt8QOOCPljQ2FL1Kca',
+    '711MCceyCBcFnzjGY4Q7Un',
+    '3QVolfxko2UyCOtexhVTli'
+]
 pseudo = obtenir_prenoms_aleatoires(n)
 conn = mysql.connector.connect(
     host="localhost",
@@ -263,6 +304,9 @@ for data in pseudo:
     id = insertUser(cursor,data,password,random.choice(biographies))
     if(id is not None):
         ids.append(id)
+
+print("-------------INSERT FOLLOW----------------------")
+insert_follow(cursor,ids,artists)
 print("-------------INSERT RELATIONS----------------------")
 insert_relation(cursor,ids)
 
