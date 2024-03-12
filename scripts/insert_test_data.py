@@ -57,11 +57,14 @@ def insert_follow(cursor,ids,artists):
             "nb_suivis": 0,
             "id_artiste": artist,
         }
-        insert_reponse = """
-            INSERT INTO `artiste`(`nb_suivis`,`id_artiste`, `createdAt`, `updatedAt` ) 
-            VALUES (%(nb_suivis)s,%(id_artiste)s,%(createdAt)s,%(updatedAt)s)
-        """
-        cursor.execute(insert_reponse, data_to_insert)
+        try:
+            insert_reponse = """
+                INSERT INTO `artiste`(`nb_suivis`,`id_artiste`, `createdAt`, `updatedAt` ) 
+                VALUES (%(nb_suivis)s,%(id_artiste)s,%(createdAt)s,%(updatedAt)s)
+            """
+            cursor.execute(insert_reponse, data_to_insert)
+        except Exception as err:
+            print(f"Artist already exist")
     for artist in artists:
         for id_utilisateur in ids:
             if(random.random() > 0.85): continue
