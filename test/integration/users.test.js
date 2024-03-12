@@ -307,7 +307,7 @@ describe('user route', () => {
     })
     describe("/users/getUserByConfirmToken", ()=> {
         it('should return valid code 200', async ()=>{
-            mockUserRepository.getUserByConfirmToken = jest.fn(()=>{
+            mockUserRepository.getByConfirmToken = jest.fn(()=>{
                 return {id_utilisateur:1}
             })
             const res = await server.inject({
@@ -317,7 +317,7 @@ describe('user route', () => {
             expect(res.statusCode).toBe(200);
         })
         it('should return invalid code 403', async ()=>{
-            mockUserRepository.getUserByConfirmToken = jest.fn(()=>{
+            mockUserRepository.getByConfirmToken = jest.fn(()=>{
                 return null
             })
             const res = await server.inject({
