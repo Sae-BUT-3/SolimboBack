@@ -33,12 +33,12 @@ describe('getUserByPseudo',()=>{
     });
     it('should return Public User',async ()=>{
         console.log("test")
-        mockUserRepository.getUserByConfirmToken = jest.fn(()=>mockUser)
+        mockUserRepository.getByConfirmToken = jest.fn(()=>mockUser)
         const result = await getUserByConfirmToken("test",{userRepository:mockUserRepository})
         expect(result).toEqual(expectedUser)
     })
     it('should return null',async ()=>{
-        mockUserRepository.getUserByConfirmToken = jest.fn(()=>null)
+        mockUserRepository.getByConfirmToken = jest.fn(()=>null)
         const result = await getUserByConfirmToken("test",{userRepository:mockUserRepository})
         expect(result).toBeNull()
     })
