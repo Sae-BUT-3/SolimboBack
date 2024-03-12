@@ -82,7 +82,6 @@ def insert_follow(cursor,ids,artists):
 def putReponse(cursor,reponse,ids, review_ids):
     reponse_ids = []
     for i in range(len(review_ids)):
-        i = review_ids
         rid = None
         for y in range(random.randint(0,5)):
             date = faker.Faker().date_between(start_date='-1y', end_date='today')
@@ -91,7 +90,7 @@ def putReponse(cursor,reponse,ids, review_ids):
                 "createdAt": date,
                 "updatedAt": date,
                 "id_utilisateur": random.choice(ids),
-                "id_review": review_ids[y],
+                "id_review": review_ids[i],
                 "id_reponse": rid,
             }
             insert_reponse = """
