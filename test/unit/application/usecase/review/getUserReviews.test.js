@@ -4,7 +4,7 @@ const {
     mockArtist,
     rawReview,
     expectedReview,
-} = require("./fixture/getReviewFixture")
+} = require("./fixture/getUserReviewFixture")
 
 describe("getReviews Test", ()=>{
     const mockReviewRepository = {}
