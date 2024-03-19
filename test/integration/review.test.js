@@ -11,6 +11,7 @@ const mockFriendRepository = {}
 const mockAccesTokenManager = {}
 const mockSpotifyRepository = {}
 const mockUserRepository = {}
+const mockCommentRepository = {}
 
 mockAccesTokenManager.generate = ((test) =>{return ''})
 const mockToken = jwt.sign({
@@ -33,7 +34,8 @@ describe('review route', () => {
             friendRepository: mockFriendRepository,
             accessTokenManager: mockAccesTokenManager,
             spotifyRepository: mockSpotifyRepository,
-            userRepository: mockUserRepository
+            userRepository: mockUserRepository,
+            commentRepository: mockCommentRepository
         }
         server.register(Jwt)
         server.auth.strategy('jwt', 'jwt', strategy({userRepository: mockUserRepository}));
@@ -49,25 +51,28 @@ describe('review route', () => {
     const {
         mockArtist,
         rawReview,
+        mockComments
     } = require("./fixture/review/getReviewFixture")
     describe("GET review route", ()=>{
         
         it("should return status code 200", async () => {
-            
+            mockCommentRepository.getReviewComments = jest.fn().mockReturnValue(mockComments)
             mockReviewRepository.getById = jest.fn((id) => rawReview)
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
+            mockCommentRepository.getReviewComments = jest.fn().mockReturnValue(mockComments)
             const res1 = await server.inject({
                 method: 'GET',
-                url: `/review/1`,
+                url: `/review/1?page=1&pageSize=10&orderByLike=true`,
             });
             expect(res1.statusCode).toBe(200);
             
         })
         it("should return status code 404", async () => {
             mockReviewRepository.getById = jest.fn((id) => null)
+            mockCommentRepository.getReviewComments = jest.fn().mockReturnValue(mockComments)
             const res1 = await server.inject({
                 method: 'GET',
-                url: `/review/1`,
+                url: `/review/1?page=1&pageSize=10&orderByLike=true`,
             });
             expect(res1.statusCode).toBe(404);
             
@@ -80,20 +85,23 @@ describe('review route', () => {
                     is_private: true
                 }
             }
+            mockCommentRepository.getReviewComments = jest.fn().mockReturnValue(mockComments)
             mockReviewRepository.getById = jest.fn((id) => mockReview)
             mockFriendRepository.areFriends = jest.fn((id, id_ami) => false)
             mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
             const res1 = await server.inject({
                 method: 'GET',
-                url: `/review/1`,
+                url: `/review/1?page=1&pageSize=10&orderByLike=true`,
                 headers: {
                     Authorization: `Bearer ${mockToken}`
                 }
+                
             });
             expect(res1.statusCode).toBe(403);
             
         })
         it("should return status code 400", async () => {
+            mockCommentRepository.getReviewComments = jest.fn().mockReturnValue(mockComments)
             mockReviewRepository.getById = jest.fn((id) => rawReview)
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => {
                 return {
@@ -105,7 +113,7 @@ describe('review route', () => {
             })
             const res1 = await server.inject({
                 method: 'GET',
-                url: `/review/1`,
+                url: `/review/1?page=1&pageSize=10&orderByLike=true`,
                 headers: {
                     Authorization: `Bearer ${mockToken}`
                 }

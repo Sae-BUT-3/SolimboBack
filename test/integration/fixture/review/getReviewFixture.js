@@ -38,11 +38,18 @@ const rawReview = {
     utilisateur: mockUser
 }
 
-
+const mockComments = [
+    {
+      id: 298,
+      description: 'test4',
+      utilisateur: mockUser
+    }
+]
 
 
 
 module.exports = {
     rawReview,
     mockArtist,
+    mockComments,
 }
