@@ -305,6 +305,15 @@ describe('review route', () => {
             });
             expect(res1.statusCode).toBe(403);
         })
+
+        it("should return status code 404", async ()=>{
+            mockUserRepository.getByEmailOrPseudo = jest.fn().mockReturnValue(null)
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/reviews/user/{id}?page=1&pageSize=10&orderByLike=true`,
+            });
+            expect(res1.statusCode).toBe(404);
+        })
     })
 
     describe("GET reviewLike route",()=>{
