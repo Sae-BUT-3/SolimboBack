@@ -82,7 +82,7 @@ const mockLikedReview = {
   "countComment": 0,
   "description": "Innovation sonore à son apogée, repoussant les limites de l'expérimentation musicale. #AvantGarde #SoundExploration",
   "note": 5,
-  "createAt": "2024-01-03T00:00:00.000Z",
+  "createdAt": "2024-01-03T00:00:00.000Z",
   "updated_at": "2024-01-03T00:00:00.000Z",
   "type": "album",
   "utilisateur": {
@@ -113,7 +113,7 @@ const mockCommentedReview = {
   "countComment": 0,
   "description": "Innovation sonore à son apogée, repoussant les limites de l'expérimentation musicale. #AvantGarde #SoundExploration",
   "note": 5,
-  "createAt": "2024-01-03T00:00:00.000Z",
+  "createdAt": "2024-01-03T00:00:00.000Z",
   "updated_at": "2024-01-03T00:00:00.000Z",
   "type": "album",
   "utilisateur": {
@@ -263,6 +263,7 @@ const expectedArtist = {
       "countlikes": 32,
       "countComment": 0,
       "doesUserLike": true,
+      "createdAt": "2024-01-03T00:00:00.000Z",
       "note": 5,
       "oeuvre": {
         "id": "68YP0pEgwhnfRqQAzu71gP",
@@ -322,6 +323,7 @@ const expectedArtist = {
       "id_review": 25,
       "description": "Innovation sonore à son apogée, repoussant les limites de l'expérimentation musicale. #AvantGarde #SoundExploration",
       "countlikes": 32,
+      "createdAt": "2024-01-03T00:00:00.000Z",
       "countComment": 0,
       "doesUserLike": true,
       "note": 5,
