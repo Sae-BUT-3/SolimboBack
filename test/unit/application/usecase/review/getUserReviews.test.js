@@ -66,6 +66,14 @@ describe("getReviews Test", ()=>{
             })
             expect(error.code).toBe(403)
         })
+
+            it("should throw error user dont exist", async ()=>{
+            mockUserRepository.getByEmailOrPseudo = jest.fn().mockReturnValue(null)
+            const error = await catchError(async ()=>{
+                await getUserReviews(1,undefined,1,10,true, serviceLocator)
+            })
+            expect(error.code).toBe(404)
+        })
         it("should throw error user private 2", async ()=>{
             mockUserRepository.getByEmailOrPseudo = jest.fn((pseudo,email) => {
                 return {
