@@ -36,13 +36,7 @@ const mockPublicUser = {
     type: "user",
     is_private: false
 }
-const mockComments = [
-    {
-      id: 298,
-      description: 'test4',
-      utilisateur: mockPublicUser
-    }
-  ]
+
 const mockUserPrivate = {
     pseudo: "John Doe",
     alias: "John",
@@ -63,7 +57,7 @@ const rawReview = {
     countComment: 4,
     description: "C'est top",
     note: 5,
-    createdAt: actualDate,
+    created_at: actualDate,
     updated_at: actualDate,
     type: 'artist',
     utilisateur: mockUser
@@ -74,7 +68,7 @@ const expectedReview = {
     countlikes: 2,
     countComment: 4,
     note: 5,
-    createdAt: actualDate,
+    createAt: actualDate,
     doesUserLike: false,
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
@@ -85,54 +79,17 @@ const expectedReview = {
         genres: ["Reggae", "Roots"],
         type: "artist"
     },
-    comments: mockComments,
     utilisateur: mockPublicUser,
     type: 'artist',
 }
 
 
 
-const rawReviewPrivate = {
-    id_review: 1,
-    id_oeuvre: 1,
-    countlikes: 2,
-    countComment: 4,
-    description: "C'est top",
-    note: 5,
-    createdAt: actualDate,
-    updated_at: actualDate,
-    type: 'artist',
-    utilisateur: mockUserPrivate
-}
-const expectedPrivate = {
-    id_review:1,
-    description: "C'est top",
-    countlikes: 2,
-    countComment: 4,
-    note: 5,
-    createdAt: actualDate,
-    doesUserLike: false,
-    oeuvre: {
-        id: "32kWZXLpwGm5Y2B0lKb6Ii",
-        name: "Bob Marley",
-        image: "https://i.scdn.co/image/ab67616d0000b273c9adfbd773852e286faed040",
-        spotify_url: "https://open.spotify.com/artist/32kWZXLpwGm5Y2B0lKb6Ii",
-        popularity: 79,
-        genres: ["Reggae", "Roots"],
-        type: "artist"
-    },
-    comments: mockComments,
-    utilisateur: mockUserPrivate,
-    type: 'artist',
-}
-  
+
 
 module.exports = {
     rawReview,
     mockArtist,
     expectedReview,
-    rawReviewPrivate,
-    expectedPrivate,
-    mockComments,
     
 }
