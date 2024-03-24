@@ -83,7 +83,7 @@ describe('artist route', () => {
             mockAccessTokenManager.decode = jest.fn(()=>{return {value:1}})
             mockUserRepository.getByUser = jest.fn().mockReturnValue(mockUser)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue(mockArtist)
-            mockLikeOeuvreRepository.doesUserLikes = jest.fn().mockReturnValue(false)
+            mockLikeOeuvreRepository.doesUserLike = jest.fn().mockReturnValue(false)
             mockLikeOeuvreRepository.like = jest.fn()
             const res1 = await server.inject({
                 method: 'POST',
