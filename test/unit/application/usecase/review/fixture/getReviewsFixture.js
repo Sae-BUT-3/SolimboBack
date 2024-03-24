@@ -30,8 +30,8 @@ const rawReview = {
     countComment: 4,
     description: "C'est top",
     note: 5,
-    created_at: actualDate,
-    updated_at: actualDate,
+    createdAt: actualDate,
+    updatedAt: actualDate,
     type: 'artist',
     utilisateur: mockUser
 }
@@ -53,7 +53,7 @@ const expectedReview = {
     countlike: 2,
     countComment: 4,
     note: 5,
-    createAt: actualDate,
+    createdAt: actualDate,
     doesUserLike: false,
     oeuvre: {
         id: "32kWZXLpwGm5Y2B0lKb6Ii",
