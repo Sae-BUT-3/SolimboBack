@@ -13,6 +13,7 @@ const mockSpotifyRepository = {}
 const mockMailRepository = {}
 const mockDocumentRepository = {}
 const mockFollowRepository = {}
+const mockOeuvreFavRepository = {}
 const mockToken = jwt.sign({
     sub: 'my-sub', // needs to match definition above
     value: 1, // this is a custom key I used, it could be named anything. Value should be a way to authenticate the user
@@ -35,6 +36,7 @@ describe('user route', () => {
             mailRepository: mockMailRepository,
             documentRepository: mockDocumentRepository,
             followRepository: mockFollowRepository,
+            oeuvreFavRepository : mockOeuvreFavRepository,
 
         }
         server.register(Jwt)
@@ -587,4 +589,335 @@ describe('user route', () => {
             expect(mockUserRepository.changePrivateStatus).toHaveBeenCalledTimes(1);
         })
     })
+
+    describe("/users/oeuvreFav", ()=> {
+        afterEach(()=>{
+            jest.clearAllMocks();
+        })
+
+        const { albumRawOneArtist } = require("../unit/interfaces/serializers/fixtures/albumFixture.js")
+        const { rawTrackWithOneArtist } = require("../unit/interfaces/serializers/fixtures/albumTrackFixture.js")
+
+        // login erreur
+        it("should return error code 401",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => null)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: "test",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(401);
+        })
+
+        // payload incorrect avec entity
+        it("should return error code 400",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => 1)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: null,
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(400);
+        })
+
+        // payload incorrect avec entity
+        it("should return error code 400",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => 1)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: 123, // doit être un string
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(400);
+        })
+        // aucune oeuvre de trouve
+        it("should return error code 404",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => 1)
+            mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+                return {error : {status: 400, message: "invalid id"}}
+            })
+            mockSpotifyRepository.getSpotifyTracks = jest.fn((idOeuvre) => {
+                return {error : {status: 400, message: "invalid id"}}
+            })
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: "test1323",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(404);
+            expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1);
+            expect(mockSpotifyRepository.getSpotifyTracks).toHaveBeenCalledTimes(1);
+
+        })
+
+        // plus de 3 oeuvres favorites avec album
+        it("should return error code 403",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => 1)
+            mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+                return Promise.resolve(albumRawOneArtist);
+            });
+            mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => false)
+            mockOeuvreFavRepository.ajoutPossible = jest.fn((id_utilisateur, idOeuvre) => false)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: "test123", // doit être un string
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+            expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+            expect(mockOeuvreFavRepository.ajoutPossible).toHaveBeenCalledTimes(1)
+            expect(res.statusCode).toBe(403)        
+        })
+
+        // plus de 3 oeuvres favorites avec track
+        it("should return error code 403",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => 1)
+            mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+                return {error : {status: 400, message: "invalid id"}}
+            })
+           
+            mockSpotifyRepository.getSpotifyTracks = jest.fn((idOeuvre) => {
+                return Promise.resolve(rawTrackWithOneArtist);
+            });
+            mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => false)
+            mockOeuvreFavRepository.ajoutPossible = jest.fn((id_utilisateur, idOeuvre) => false)
+
+            const res = await server.inject({
+                method: 'POST',
+                url: '/users/oeuvreFav',
+                payload: {
+                    idOeuvre: "test123",
+                },
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+            expect(mockSpotifyRepository.getSpotifyTracks).toHaveBeenCalledTimes(1)
+            expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+            expect(mockOeuvreFavRepository.ajoutPossible).toHaveBeenCalledTimes(1)
+            expect(res.statusCode).toBe(403)        
+        })
+
+    // ajout réussie avec album
+    it("should return code 200",async ()=>{
+    mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+    mockUserRepository.getByUser = jest.fn(() => 1)
+    mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+        return Promise.resolve(albumRawOneArtist);
+    });
+    mockSpotifyRepository.getSpotifyTracks = jest.fn();
+    mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => false)
+    mockOeuvreFavRepository.ajoutPossible = jest.fn((id_utilisateur, idOeuvre) => true)
+    mockOeuvreFavRepository.addOeuvrefav = jest.fn()
+
+    const res = await server.inject({
+        method: 'POST',
+        url: '/users/oeuvreFav',
+        payload: {
+            idOeuvre: "test123",
+        },
+        headers: {
+            Authorization: `Bearer ${mockToken}`
+        }
+    })
+    expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+    expect(mockSpotifyRepository.getSpotifyTracks).not.toHaveBeenCalled()
+    expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.ajoutPossible).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.addOeuvrefav).toHaveBeenCalledTimes(1)
+    expect(res.statusCode).toBe(200)        
+})
+
+// ajout réussie avec track
+it("should return code 200",async ()=>{
+    mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+    mockUserRepository.getByUser = jest.fn(() => 1)
+    mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+        return {error : {status: 400, message: "invalid id"}}
+    })
+    mockSpotifyRepository.getSpotifyTracks = jest.fn((idOeuvre) => {
+        return Promise.resolve(rawTrackWithOneArtist);
+    });
+    mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => false)
+    mockOeuvreFavRepository.ajoutPossible = jest.fn((id_utilisateur, idOeuvre) => true)
+    mockOeuvreFavRepository.addOeuvrefav = jest.fn()
+
+    const res = await server.inject({
+        method: 'POST',
+        url: '/users/oeuvreFav',
+        payload: {
+            idOeuvre: "test123",
+        },
+        headers: {
+            Authorization: `Bearer ${mockToken}`
+        }
+    })
+    expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+    expect(mockSpotifyRepository.getSpotifyTracks).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.ajoutPossible).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.addOeuvrefav).toHaveBeenCalledTimes(1)
+    expect(res.statusCode).toBe(200)        
+})
+
+   // supression reussite avec album
+   it("should return code 200",async ()=>{
+    mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+    mockUserRepository.getByUser = jest.fn(() => 1)
+    mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+        return Promise.resolve(albumRawOneArtist);
+    });
+    
+    mockSpotifyRepository.getSpotifyTracks = jest.fn();
+    mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => true)
+    mockOeuvreFavRepository.ajoutPossible = jest.fn()
+    mockOeuvreFavRepository.addOeuvrefav = jest.fn()
+    mockOeuvreFavRepository.deleteOeuvrefav = jest.fn()
+
+
+    const res = await server.inject({
+        method: 'POST',
+        url: '/users/oeuvreFav',
+        payload: {
+            idOeuvre: "test123",
+        },
+        headers: {
+            Authorization: `Bearer ${mockToken}`
+        }
+    })
+    expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+    expect(mockSpotifyRepository.getSpotifyTracks).not.toHaveBeenCalled();
+    expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.ajoutPossible).not.toHaveBeenCalled();
+    expect(mockOeuvreFavRepository.deleteOeuvrefav).toHaveBeenCalledTimes(1)
+    expect(res.statusCode).toBe(200)        
+})
+
+   // supression reussite avec track
+it("should return code 200",async ()=>{
+    mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+    mockUserRepository.getByUser = jest.fn(() => 1)
+    mockSpotifyRepository.getSpotifyAlbums = jest.fn((idOeuvre) => {
+        return {error : {status: 400, message: "invalid id"}}
+    })
+    mockSpotifyRepository.getSpotifyTracks = jest.fn((idOeuvre) => {
+        return Promise.resolve(rawTrackWithOneArtist);
+    });
+    mockOeuvreFavRepository.oeuvreFavExists = jest.fn((id_utilisateur, idOeuvre) => true)
+    mockOeuvreFavRepository.ajoutPossible = jest.fn()
+    mockOeuvreFavRepository.addOeuvrefav = jest.fn()
+    mockOeuvreFavRepository.deleteOeuvrefav = jest.fn()
+
+    const res = await server.inject({
+        method: 'POST',
+        url: '/users/oeuvreFav',
+        payload: {
+            idOeuvre: "test123",
+        },
+        headers: {
+            Authorization: `Bearer ${mockToken}`
+        }
+    })
+    expect(mockSpotifyRepository.getSpotifyAlbums).toHaveBeenCalledTimes(1)
+    expect(mockSpotifyRepository.getSpotifyTracks).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.oeuvreFavExists).toHaveBeenCalledTimes(1)
+    expect(mockOeuvreFavRepository.ajoutPossible).not.toHaveBeenCalled()
+    expect(mockOeuvreFavRepository.deleteOeuvrefav).toHaveBeenCalledTimes(1)
+    expect(res.statusCode).toBe(200) 
+ })
+
+})
+
+
+    describe("/users/getOeuvresFav", ()=> {
+        afterEach(()=>{
+            jest.clearAllMocks();
+        })
+        it("should return error code 401",async ()=>{
+            mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+            mockUserRepository.getByUser = jest.fn(() => null)
+              
+            const res = await server.inject({
+                method: 'GET',
+                url: '/users/getOeuvresFav',
+                headers: {
+                    Authorization: `Bearer ${mockToken}`
+                }
+            })
+            expect(res.statusCode).toBe(401);
+        })
+    })
+    it("should return code 200",async ()=>{
+        mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+        mockUserRepository.getByUser = jest.fn(() => 1)
+        mockOeuvreFavRepository.getOeuvresFav = jest.fn((id) => {
+            return [1,2,3]
+        })    
+        const res = await server.inject({
+            method: 'GET',
+            url: '/users/getOeuvresFav',
+            headers: {
+                Authorization: `Bearer ${mockToken}`
+            }
+        })
+        expect(res.statusCode).toBe(200);
+    })
+
+    it("should return code 200",async ()=>{
+        mockAccesTokenManager.decode = jest.fn(()=>{return {id:1}})
+        mockUserRepository.getByUser = jest.fn(() => 1)
+        mockOeuvreFavRepository.getOeuvresFav = jest.fn((id) => {
+            return []
+        })    
+        const res = await server.inject({
+            method: 'GET',
+            url: '/users/getOeuvresFav',
+            headers: {
+                Authorization: `Bearer ${mockToken}`
+            }
+        })
+        expect(res.statusCode).toBe(200);
+    })
+
 });
+
+
+   
+
