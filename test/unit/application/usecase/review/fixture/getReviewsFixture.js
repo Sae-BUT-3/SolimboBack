@@ -26,7 +26,7 @@ const actualDate = new Date()
 const rawReview = {
     id_review: 1,
     id_oeuvre: 1,
-    countlikes: 2,
+    countlike: 2,
     countComment: 4,
     description: "C'est top",
     note: 5,
@@ -50,7 +50,7 @@ const mockPublicUser = {
 const expectedReview = {
     id_review:1,
     description: "C'est top",
-    countlikes: 2,
+    countlike: 2,
     countComment: 4,
     note: 5,
     createAt: actualDate,
