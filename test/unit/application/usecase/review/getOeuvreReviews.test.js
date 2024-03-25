@@ -15,7 +15,7 @@ describe("getReviews Test", ()=>{
         accessTokenManager: mockAccesTokenManager,
         spotifyRepository: mockSpotifyRepository,
     }
-    describe("successful cases", ()=>{
+    describe("valid cases", ()=>{
         it("should return serialized review with public user", async ()=>{
             mockReviewRepository.getOeuvreReviews = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
@@ -35,6 +35,25 @@ describe("getReviews Test", ()=>{
             const result = await getOeuvreReviews(1,'token',1,10,true, serviceLocator)
             expect(result).toEqual(expectedReviews)
         })
+    })
+
+    describe("invalide cases", ()=>{
+        it("should throw error 400", async ()=>{
+            mockReviewRepository.getOeuvreReviews = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => {
+                return {
+                    error: {
+                        status: 400,
+                        message: "message",
+                    }
+                }
+            })
+            const error = await catchError(async () => {
+                await getOeuvreReviews(1,undefined,1,10,true, serviceLocator)
+            })
+            expect(error.code).toBe(400)
+        })
+       
     })
    
 })
