@@ -496,4 +496,38 @@ describe('review route', () => {
             expect(res1.statusCode).toBe(403);
         })
     })
+
+    describe("GET oeuvreReviews",()=>{
+        const {
+            mockArtist,
+            rawReview,
+        } = require("./fixture/review/getOeuvreReviewFixture.js")
+        it("should return status code 200", async ()=>{
+            mockReviewRepository.getOeuvreReviews = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/reviews/oeuvre/{id}?page=1&pageSize=10&orderByLike=true`,
+            });
+            expect(res1.statusCode).toBe(200);
+        })
+
+        it("should return status code 400", async ()=>{
+            mockReviewRepository.getOeuvreReviews = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
+            mockSpotifyRepository.getOeuvre = jest.fn((id,type) => {
+                return {
+                    error: {
+                        status: 400,
+                        message: "message",
+                    }
+                }
+            })
+            const res1 = await server.inject({
+                method: 'GET',
+                url: `/reviews/oeuvre/{id}?page=1&pageSize=10&orderByLike=true`,
+            });
+            expect(res1.statusCode).toBe(400);
+        })
+ 
+    })
 });
