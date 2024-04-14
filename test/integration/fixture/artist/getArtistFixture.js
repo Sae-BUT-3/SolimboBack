@@ -78,7 +78,7 @@ const actualDate = new Date()
 const mockLikedReview = {
   "id_review": 25,
   "id_oeuvre": "68YP0pEgwhnfRqQAzu71gP",
-  "countlikes": 32,
+  "countlike": 32,
   "countComment": 0,
   "description": "Innovation sonore à son apogée, repoussant les limites de l'expérimentation musicale. #AvantGarde #SoundExploration",
   "note": 5,
@@ -109,7 +109,7 @@ const mockLikedReview = {
 const mockCommentedReview = {
   "id_review": 25,
   "id_oeuvre": "68YP0pEgwhnfRqQAzu71gP",
-  "countlikes": 32,
+  "countlike": 32,
   "countComment": 0,
   "description": "Innovation sonore à son apogée, repoussant les limites de l'expérimentation musicale. #AvantGarde #SoundExploration",
   "note": 5,
