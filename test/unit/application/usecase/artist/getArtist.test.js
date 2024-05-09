@@ -35,7 +35,7 @@ describe("getArtist Test", ()=>{
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue(mockOeuvreReviewSpotify)
             const result = await getArtist(1,'token', serviceLocator)
@@ -80,7 +80,7 @@ describe("getArtist Test", ()=>{
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue({
                 error: {
@@ -106,7 +106,7 @@ describe("getArtist Test", ()=>{
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValueOnce(mockOeuvreReviewSpotify).mockReturnValue({
                 error: {
