@@ -19,7 +19,7 @@ describe("getReviews Test", ()=>{
 
         mockReviewRepository.getReviews = jest.fn((page,pageSize,orderByLike, isPrivate,userToken) => [rawReview])
         mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
-        mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
+        mockreviewRepository.doesUserLikes = jest.fn((id_utilisateur,reviewId) => false)
         const expectedReviews = [expectedReview]
         const result = await getReviews(1,10,true,undefined, serviceLocator)
         expect(result).toEqual(expectedReviews)
@@ -29,7 +29,7 @@ describe("getReviews Test", ()=>{
         mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
         mockReviewRepository.getReviews = jest.fn((page,pageSize,orderByLike, isPrivate,userToken) => [rawReview])
         mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
-        mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
+        mockreviewRepository.doesUserLikes = jest.fn((id_utilisateur,reviewId) => false)
         const expectedReviews = [expectedReview]
         const result = await getReviews(1,10,true,'something', serviceLocator)
         expect(result).toEqual(expectedReviews)

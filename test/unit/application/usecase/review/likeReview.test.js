@@ -19,7 +19,7 @@ describe("likeReview Test", ()=>{
                     id_utilisateur: 1
                 }
             })
-            mockReviewRepository.doesUserLike = jest.fn((id) => true)
+            mockreviewRepository.doesUserLikes = jest.fn((id) => true)
             mockReviewRepository.unlikeReview = jest.fn((id) => true)
             await likeReview(1,'token', serviceLocator)
             expect(mockReviewRepository.unlikeReview).toHaveBeenCalledTimes(1)
@@ -32,7 +32,7 @@ describe("likeReview Test", ()=>{
                     id_utilisateur: 1
                 }
             })
-            mockReviewRepository.doesUserLike = jest.fn((id) => false)
+            mockreviewRepository.doesUserLikes = jest.fn((id) => false)
             mockReviewRepository.likeReview = jest.fn((id) => true)
             await likeReview(1,'token', serviceLocator)
             expect(mockReviewRepository.likeReview).toHaveBeenCalledTimes(1)
