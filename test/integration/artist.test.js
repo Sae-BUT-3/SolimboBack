@@ -69,7 +69,7 @@ describe('artist route', () => {
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue(mockOeuvreReviewSpotify)
             const res1 = await server.inject({

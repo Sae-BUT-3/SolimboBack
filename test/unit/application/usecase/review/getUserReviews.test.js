@@ -46,7 +46,7 @@ describe("getReviews Test", ()=>{
             mockFriendRepository.areFriends = jest.fn((id, id_ami) => true)
             mockReviewRepository.getReviewByUserId = jest.fn((id_utilisateur,page,pageSize,orderByLike) => [rawReview])
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
-            mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
+            mockreviewRepository.doesUserLikes = jest.fn((id_utilisateur,reviewId) => false)
             const expectedReviews = [expectedReview]
             const result = await getUserReviews(1,'token',1,10,true, serviceLocator)
             expect(result).toEqual(expectedReviews)

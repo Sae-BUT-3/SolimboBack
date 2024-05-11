@@ -49,7 +49,7 @@ describe("getOeuvre Test", ()=>{
             mockReviewRepository.getReviewCount = jest.fn((idOeuvre) => 2)
             mockReviewRepository.getOeuvreRating = jest.fn(() => 1)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(false)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(false)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue(mockOeuvreReviewSpotify)
 
             //mockSpotifyRepository.getSpotifyArtist = jest.fn((artistId) => mockArtist)
@@ -57,7 +57,7 @@ describe("getOeuvre Test", ()=>{
            // mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             //mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             //mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-           // mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+           // mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
           //  mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
            // mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue(mockOeuvreReviewSpotify)
             const result = await getOeuvre(1,'token', serviceLocator)
@@ -102,7 +102,7 @@ describe("getOeuvre Test", ()=>{
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValue({
                 error: {
@@ -128,7 +128,7 @@ describe("getOeuvre Test", ()=>{
             mockReviewRepository.getOeuvreRating = jest.fn((id) => 1)
             mockReviewRepository.getReviewCount = jest.fn((id) => 2)
             mockReviewRepository.getOeuvreReviews = jest.fn().mockReturnValueOnce([mockLikedReview]).mockReturnValueOnce([mockCommentedReview])
-            mockReviewRepository.doesUserLike = jest.fn().mockReturnValue(true)
+            mockreviewRepository.doesUserLikes = jest.fn().mockReturnValue(true)
             mockFollowRepository.doesFollows = jest.fn().mockReturnValue(true)
             mockSpotifyRepository.getOeuvre = jest.fn().mockReturnValueOnce(mockOeuvreReviewSpotify).mockReturnValue({
                 error: {

@@ -39,7 +39,7 @@ describe("getReview Test", ()=>{
             mockSpotifyRepository.getOeuvre = jest.fn((id,type) => mockArtist)
             mockFriendRepository.areFriends = jest.fn((id, id_ami) => true)
             mockAccesTokenManager.decode = jest.fn((token) => {return {value: 1}})
-            mockReviewRepository.doesUserLike = jest.fn((id_utilisateur,reviewId) => false)
+            mockreviewRepository.doesUserLikes = jest.fn((id_utilisateur,reviewId) => false)
             const result = await getReview(1,'something',1,10,true, serviceLocator)
             expect(result).toEqual(expectedPrivate)
         })
