@@ -87,7 +87,6 @@ describe("getAccessToken", () => {
         accessTokenManager: mockAccessTokenManager,
       });
     });
-    console.log(error);
     expect(error.code).toBe(401);
   });
 });
