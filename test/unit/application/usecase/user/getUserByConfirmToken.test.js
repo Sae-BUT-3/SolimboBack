@@ -32,7 +32,6 @@ describe("getUserByPseudo", () => {
     jest.clearAllMocks();
   });
   it("should return Public User", async () => {
-    console.log("test");
     mockUserRepository.getByConfirmToken = jest.fn(() => mockUser);
     const result = await getUserByConfirmToken("test", {
       userRepository: mockUserRepository,
