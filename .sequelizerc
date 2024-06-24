@@ -1,0 +1,5 @@
+const path = require('path');
+
+module.exports = {
+  'migrations-path': path.resolve('lib',"infrastructure", "orm", "sequelize", 'migrations'),  // nouveau chemin pour les migrations
+};

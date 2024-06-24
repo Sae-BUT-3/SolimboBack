@@ -1,0 +1,68 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [20.10.0]
+
+    env: 
+      SECRET_ENCODER: ${{secrets.SECRET_ENCODER}}
+      DATABASE_DIALECT: ${{secrets.DATABASE_DIALECT}}
+      DATABASE_URI: ${{secrets.DATABASE_URI}}
+      FRONT_URL: ${{secrets.FRONT_URL}}
+      FRONT_URL_MOBILE: ${{secrets.FRONT_URL_MOBILE}}
+      PORT: ${{secrets.PORT}}
+      BCRYPT_NUMBER: ${{secrets.BCRYPT_NUMBER}}
+      CLIENT_ID: ${{secrets.CLIENT_ID}}
+      CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+      MAILER_SERVICE: ${{secrets.MAILER_SERVICE}}
+      MAILER_EMAIL: ${{secrets.MAILER_EMAIL}}
+      MAILER_PASS: ${{secrets.MAILER_PASS}}
+      API_URL: ${{secrets.API_URL}}
+      DEEPL_API_KEY: ${{secrets.DEEPL_API_KEY}}
+    steps:  
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: mkdir -p mysql
+    - run: docker ps -a -q | xargs -r docker stop
+    - run: docker ps -a -q | xargs -r docker rm
+    - run: docker-compose up -d
+    - run: npm ci
+    - run: npm run build --if-present
+    - name : create env file
+      run: |
+        touch .env
+        echo SECRET_ENCODER=$SECRET_ENCODER >> .env
+        echo DATABASE_DIALECT=$DATABASE_DIALECT >> .env
+        echo DATABASE_URI=$DATABASE_URI >> .env
+        echo DATABASE_URL=$DATABASE_URL >> .env
+        echo DATABASE_USERBAME=$DATABASE_USERBAME >> .env
+        echo DATABASE_PASSWORD=$DATABASE_PASSWORD >> .env
+        echo DATABASE_NAME=$DATABASE_NAME >> .env
+        echo DATABASE_PORT=$DATABASE_PORT >> .env
+        echo FRONT_URL=$FRONT_URL >> .env
+        echo FRONT_URL_MOBILE=$FRONT_URL_MOBILE >> .env
+        echo PORT=$PORT >> .env
+        echo BCRYPT_NUMBER=$BCRYPT_NUMBER >> .env
+        echo CLIENT_ID=$CLIENT_ID >> .env
+        echo CLIENT_SECRET=$CLIENT_SECRET >> .env
+        echo MAILER_SERVICE=$MAILER_SERVICE >> .env
+        echo MAILER_EMAIL=$MAILER_EMAIL >> .env
+        echo MAILER_PASS=$MAILER_PASS >> .env
+        echo API_URL=$API_URL >> .env
+        echo DEEPL_API_KEY=$DEEPL_API_KEY >> .env
+        echo PROTOCOL=$PROTOCOL >> .env
+    - run : pm2 restart back
