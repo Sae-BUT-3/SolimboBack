@@ -66,5 +66,5 @@ jobs:
         echo API_URL=$API_URL >> .env
         echo DEEPL_API_KEY=$DEEPL_API_KEY >> .env
         echo PROTOCOL=$PROTOCOL >> .env
-    - run : npx sequence-cli db:migrate
+    - run : npx sequelize-cli db:migrate
     - run : pm2 restart back
