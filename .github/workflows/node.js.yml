@@ -33,6 +33,7 @@ jobs:
       DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
       DATABASE_NAME: ${{secrets.DATABASE_NAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DEEPL_API_KEY: ${{secrets.DEEPL_API_KEY}}
       PROTOCOL: ${{secrets.PROTOCOL}}
     steps:  
     - uses: actions/checkout@v4
