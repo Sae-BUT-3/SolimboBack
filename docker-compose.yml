@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   mariadb:
     container_name: mariadb
@@ -10,7 +10,7 @@ services:
       MARIADB_DATABASE: spotify
     restart: always
     volumes:
-      - ./mysql:/var/lib/mysql
+      - /var/lib/mysql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION:-latest}
     container_name: phpmyadmin

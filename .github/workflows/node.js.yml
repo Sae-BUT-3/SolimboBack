@@ -34,7 +34,7 @@ jobs:
       DATABASE_NAME: ${{secrets.DATABASE_NAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
       DEEPL_API_KEY: ${{secrets.DEEPL_API_KEY}}
-      PROTOCOL: ${{secrets.PROTOCOL}}
+      UPLOAD_DIR: ${{secrets.UPLOAD_DIR}}
     steps:  
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -72,5 +72,9 @@ jobs:
         echo API_URL=$API_URL >> .env
         echo DEEPL_API_KEY=$DEEPL_API_KEY >> .env
         echo PROTOCOL=$PROTOCOL >> .env
-    - run : npx sequelize-cli db:migrate
+        echo UPLOAD_DIR=$UPLOAD_DIR >> .env
+    - name : migration
+      continue-on-error: true
+      run: npx sequelize-cli db:migrate
     - run : pm2 restart back
+    
