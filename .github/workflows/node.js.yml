@@ -28,7 +28,12 @@ jobs:
       MAILER_EMAIL: ${{secrets.MAILER_EMAIL}}
       MAILER_PASS: ${{secrets.MAILER_PASS}}
       API_URL: ${{secrets.API_URL}}
-      DEEPL_API_KEY: ${{secrets.DEEPL_API_KEY}}
+      DATABASE_USERBAME: ${{secrets.DATABASE_USERBAME}}
+      DATABASE_URL: ${{secrets.DATABASE_URL}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      PROTOCOL: ${{secrets.PROTOCOL}}
     steps:  
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
