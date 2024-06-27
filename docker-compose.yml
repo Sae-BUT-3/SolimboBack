@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   mariadb:
+    env_file: ".env"
     container_name: mariadb
     image: mariadb:latest
     ports:
@@ -10,7 +11,7 @@ services:
       MARIADB_DATABASE: spotify
     restart: always
     volumes:
-      - /var/lib/mysql
+      - ${DATA_PATH}:/var/lib/mysql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION:-latest}
     container_name: phpmyadmin
